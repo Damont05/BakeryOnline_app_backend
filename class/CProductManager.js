@@ -1,112 +1,166 @@
 //**************************************************************************************/
 //      |       Author      |  Desafio  |       descripción         |    Fecha   |
 //      |------------------|------------|---------------------------|------------|
-//      |  Luis D. Montero |      1     |  Clases con ECMAScript y  | 14-10-2023
+//         Luis D. Montero |      1     |  Clases con ECMAScript y  | 14-10-2023
 //                                        ECMAScript avanzado             
+//      |-----------------|------------|---------------------------|------------|
+//        Luis D. Montero |      2     |   Manejeo de Archivos     |  25-10-2023
 //      |-----------------|------------|---------------------------|------------|
 //
 //****************************************************************************************/
 
+//Required
+const fs = require('fs');
 class CProductManager {
 
-    constructor(){
-        this._products = [];
+    constructor()
+    {   
+        //ruta relativa de archivo
+        this.path = "./data.json";
+        //llamado a funcion crear archivo
+        this.createfile(this.path);
     }
 
-    //Agregar productos al arreglo _products
+    //Funcion crear Archivo 
+    createfile (file) {
+        let products = [];
+        const jsonData = JSON.stringify(products, null, 5);
+        fs.writeFileSync(file, jsonData);
+    }
+
+    //Funcion Agregar productos al arreglo _products
     addProduct(code,title,description,price,thumbnail,stock){
 
-        try {
+        let valid = true;
+        let id;
+        let products = this.getProducts(this.path);
 
+        try{
             //validar que todos los campos sean obligatorios para agregar un producto.
             if(!code||!title||!description||!price||!thumbnail||!stock){
                 console.log("******************************************");
-                throw new Error("Faltan parametros, todos los campos son obligatorios");
+                throw new Error();
             }
-
-            //incrementador de id al crear un producto
-            let id = 1;
-            if(this._products.length>0){
-                id = this._products[this._products.length-1].id + 1
-            }
-
-            let newProduct = {
-                id,
-                code,
-                title,
-                description,
-                price,
-                thumbnail,
-                stock
-            }
-
-            let indice=this._products.findIndex(prod=>prod.code===code)
-            if(indice===-1){
-                this._products.push(newProduct);
-                return
-            }
-            console.log (`\n******************************** \n ERROR: No se puede agregar producto, codigo de producto: '${code}' duplicado.`)
-            
-        } catch (e) {
-            console.log("ERROR: F_addProduct: " +  e);
+        }catch (e) {
+            console.error("Incomplete product parameters");
+            return;
+                       
         }
-        
-    }
 
-    //Obtener productos
-    getProducts(){return this._products;}
+        //validando existencia del codigo de producto
+        products.map((product)=>{
+            if (product.code === code){
+                flag = false;
+                console.log("******************************************");
+                console.log("ERROR: 'Code' already in use!");
+            }
+        })
+
+        if (valid){
+            try{
+                id = products.slice(-1)[0].id;
+            }
+            catch(error){
+                id = 0;
+            }finally{
+                id++
+            }
+        
+            products.push({id, code, title, description, price, thumbnail, stock})
+            const productsJson = JSON.stringify(products, null, 5);
+            fs.writeFileSync(this.path, productsJson);
+        }
+                
+    }      
+    
+    //Funcion Obtener productos
+    getProducts (){
+        if(fs.existsSync(this.path)){
+            let productsJSON = fs.readFileSync(this.path, 'utf-8');
+            let products = JSON.parse(productsJSON);
+            return products;
+            
+        }else{
+            console.log("File not found!");
+        }
+    }
 
     //Obtener productos por Id
     getProductById(id){
-
         try {
-            let indice = this._products.findIndex(prod => prod.id === id)
-            //indice -1 cuando no lo encuentra en el arrays
-            if (indice === -1){
-                console.log(`ERROR: Not found`);
-                return
-            }
-            //en caso contrario retorna el producto en la posicion pasada por parametro
-            return this._products[indice];
-
+           const products = this.getProducts(this.path);
+           const product = products.filter(e=> e.id === parseInt(id));
+           return product;
+           
         } catch (e) {
             console.log("ERROR: F_getProductById: " +  e);
         }
     }
+
+    //Actualizar productos
+    updateProduct(id, field, value){
+        try {
+            
+            let products = this.getProducts(this.path);
+            const indexProduct = products.findIndex(product => product.id === id);
+            if(indexProduct !== -1){
+                products[indexProduct][field] = value;
+                const productsJson = JSON.stringify(products, null, 2);
+                fs.writeFileSync(this.path, productsJson);
+                console.log("Product updated!");
+            }else{
+                throw new Error();
+            }
+        } catch (error) {
+            console.error("ERROR: F_updateProduct() - ID Product not found!");
+            return;
+        }
+    }
+
+    //Eliminar prductos 
+    deleteProduct (id){
+
+        try {
+            
+            let products = this.getProducts(this.path);
+            const index = products.findIndex(product => product.id === id);
+    
+            if (index !== -1){
+                let newProduct = [...products.slice(0, index), ...products.slice(index + 1)];
+                const productsJson = JSON.stringify(newProduct, null, 5);
+                fs.writeFileSync(this.path, productsJson);
+                console.log("Product removed!");
+            }else{
+                throw new Error();
+            }
+        } catch (error) {
+            console.error("ERROR: F_deleteProduct() - ID Product not found!");
+            return;
+        }
+    }
 } //end class CProductManager
 
-/*
+//(code,title,description,price,thumbnail,stock){
 //********PROCESO DE TESTING*********
-//Se creará una instancia de la clase “ProductManager”
-let pm = new CProductManager();
-//Se llamará “getProducts” recién creada la instancia, debe devolver un arreglo vacío []
-console.log("******************************************");
+const pm = new CProductManager;
+//arrays vacio
 console.log(pm.getProducts());
-//Se llamará al método “addProduct” con los campos:
-console.log("******************************************");
+console.log("*****************PRODUCTOS AGREGADOS**********************");
+//add productos 
 pm.addProduct("abc123","producto prueba", "Este es un producto prueba", 200, "Sin imagen", 25);
-//Se llamará el método “getProducts” nuevamente, esta vez debe aparecer el producto recién agregado
+pm.addProduct("dfg456","producto prueba 2", "Este es un producto prueba 2", 400, "Sin imagen", 10);
+pm.addProduct("hij789","producto prueba 3", "Este es un producto prueba 3", 340, "Sin imagen", 13);
+//obtener productos recien agregados
 console.log(pm.getProducts());
-//Se llamará al método “addProduct” con los mismos campos de arriba, debe arrojar un error porque el código estará repetido.
-console.log("******************************************");
-pm.addProduct("abc123","producto prueba", "Este es un producto prueba", 200, "Sin imagen", 25);
-console.log("******************************************");
-//Se evaluará que getProductById devuelva error si no encuentra el producto o el producto en caso de encontrarlo.
-console.log(pm.getProductById(2));
-console.log("******************************************");
-*/
-
-//**********PROCESO FINAL*********
-let pm = new CProductManager();
-//add products
-pm.addProduct("PB003","Croissant de Jamon de Campo", "con queso mozzarella", 45, "./assets/img", 3);
-pm.addProduct("PB001","Tartaleta Nuez Caluga", "100gr", 122, "./assets/img", 1);
-pm.addProduct("PB002","Medialuna", "80gr", 40, "./assets/img", 3);
-//get all products
-console.log("******************************************");
+console.log("*************ACTUALIZAR PRODUCTO*******************");
+//Actualiza el  producto por id, parametro y nuevo valor
+pm.updateProduct(1, "stock", 11);
 console.log(pm.getProducts());
-console.log("******************************************");
-//get product by id
+console.log("******************PRODUCTO POR ID***********************");
+//obtener producto por id
 console.log(pm.getProductById(3));
-console.log()
-console.log("******************************************");
+console.log("*****************ELIMINAR PRODUCT*****************");
+pm.deleteProduct(2);
+console.log(pm.getProducts());
+
+

@@ -1,0 +1,24 @@
+{
+  "name": "bakeryonline_app_backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Damont05/BakeryOnline_app_backend.git"
+  },
+  "keywords": [],
+  "author": "Luis Daniel Montero",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Damont05/BakeryOnline_app_backend/issues"
+  },
+  "homepage": "https://github.com/Damont05/BakeryOnline_app_backend#readme",
+  "type": "module",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

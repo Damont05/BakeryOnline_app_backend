@@ -2,11 +2,13 @@
      {
           "id": 1,
           "code": "COD0001",
-          "title": "Pan Frances", 
+          "title": "Pan Frances",
           "description": "180 - 200g",
           "price": 200,
-          "thumbnail": "https://cuk-it.com/wp-content/uploads/2020/07/thumb03-low-1024x576.jpg",
-          "stock": 71
+          "status": true,
+          "stock": 71,
+          "category": "Desayuno",
+          "thumbnail": "https://cuk-it.com/wp-content/uploads/2020/07/thumb03-low-1024x576.jpg"
      },
      {
           "id": 2,
@@ -14,83 +16,119 @@
           "title": "Pan Dulce",
           "description": "6 unidades",
           "price": 540,
-          "thumbnail": "https://enharinado.com/wp-content/uploads/2017/03/tunjitas.jpg",
-          "stock": 63
+          "status": true,
+          "stock": 63,
+          "category": "Desayuno",
+          "thumbnail": "https://enharinado.com/wp-content/uploads/2017/03/tunjitas.jpg"
      },
      {
           "id": 3,
           "code": "COD0003",
-          "title": "Pan de Molde", 
+          "title": "Pan de Molde",
           "description": "paq - 700g",
           "price": 610,
-          "thumbnail": "https://media.mykaramelli.com/galeria/recetas/receta-de-pan-de-molde_352_1.jpg",
-          "stock": 33
+          "status": true,
+          "stock": 33,
+          "category": "Despensa",
+          "thumbnail": "https://media.mykaramelli.com/galeria/recetas/receta-de-pan-de-molde_352_1.jpg"
      },
      {
           "id": 4,
           "code": "COD0004",
-          "title":  "Molde Integral", 
+          "title": "Molde Integral",
           "description": "paq - 450g",
           "price": 400,
-          "thumbnail": "https://harinas.monisa.com/wp-content/uploads/2018/08/IntegralWeb.png",
-          "stock": 50
+          "status": true,
+          "stock": 50,
+          "category": "Despensa",
+          "thumbnail": "https://harinas.monisa.com/wp-content/uploads/2018/08/IntegralWeb.png"
      },
      {
           "id": 5,
           "code": "COD0005",
-          "title":  "Brownies",
+          "title": "Brownies",
           "description": "unidad, 100 - 120g",
           "price": 450,
-          "thumbnail": "https://cuk-it.com/wp-content/uploads/2021/06/thumb02-e1624221067478.jpg",
-          "stock": 56
+          "status": true,
+          "stock": 56,
+          "category": "Aperitivos",
+          "thumbnail": "https://cuk-it.com/wp-content/uploads/2021/06/thumb02-e1624221067478.jpg"
      },
      {
           "id": 6,
           "code": "COD0006",
-          "title":  "Medialunas", 
+          "title": "Medialunas",
           "description": "5 unidades",
           "price": 430,
-          "thumbnail": "https://www.pequerecetas.com/wp-content/uploads/2018/09/brownie-de-chocolate-receta.jpg",
-          "stock": 37
-     }, 
-     
+          "status": true,
+          "stock": 37,
+          "category": "Aperitivos",
+          "thumbnail": "https://www.pequerecetas.com/wp-content/uploads/2018/09/brownie-de-chocolate-receta.jpg"
+     },
      {
           "id": 7,
           "code": "COD0007",
-          "title":  "Empanada", 
+          "title": "Empanada",
           "description": "unidad - 100g",
           "price": 290,
-          "thumbnail": "https://cdn.kiwilimon.com/brightcove/7151/7151.jpg",
-          "stock": 80
+          "status": true,
+          "stock": 80,
+          "category": "Desayuno",
+          "thumbnail": "https://cdn.kiwilimon.com/brightcove/7151/7151.jpg"
      },
-
      {
           "id": 8,
           "code": "COD0008",
-          "title":  "Alfajor",  
+          "title": "Alfajor",
           "description": "6 unidades",
           "price": 100,
-          "thumbnail": "https://www.elmundoeats.com/wp-content/uploads/2021/07/FP2-Argentine-alfajores-on-a-rack-500x500.jpg",
-          "stock": 28
+          "status": true,
+          "stock": 28,
+          "category": "Aperitivos",
+          "thumbnail": "https://www.elmundoeats.com/wp-content/uploads/2021/07/FP2-Argentine-alfajores-on-a-rack-500x500.jpg"
      },
-
      {
           "id": 9,
           "code": "COD0009",
-          "title":  "Berlines",   
+          "title": "Berlines",
           "description": "unidad - 80g",
           "price": 300,
-          "thumbnail": "https://lh3.googleusercontent.com/-D2KE4kAMVkE/YLAB1nwETfI/AAAAAAAAPR0/unz8_hcBeeYCJ5IiPZrWYGZUrE5sx2S1wCLcBGAsYHQ/bolasdefraile123456789.jpg",
-          "stock": 48
+          "status": true,
+          "stock": 48,
+          "category": "Aperitivos",
+          "thumbnail": "https://lh3.googleusercontent.com/-D2KE4kAMVkE/YLAB1nwETfI/AAAAAAAAPR0/unz8_hcBeeYCJ5IiPZrWYGZUrE5sx2S1wCLcBGAsYHQ/bolasdefraile123456789.jpg"
      },
-
      {
           "id": 10,
           "code": "COD0010",
-          "title":  "Magdalenas",    
+          "title": "Magdalenas",
           "description": "7 unidades",
           "price": 270,
-          "thumbnail": "https://www.pequerecetas.com/wp-content/uploads/2012/11/magdalenas.jpg",
-          "stock": 44
+          "status": true,
+          "stock": 44,
+          "category": "Aperitivos",
+          "thumbnail": "https://www.pequerecetas.com/wp-content/uploads/2012/11/magdalenas.jpg"
+     },
+     {
+          "id": 11,
+          "code": "COD0011",
+          "title": "Pizza Fugazzeta",
+          "description": "Pizza Fugazzeta, 6 a 8 porciones",
+          "price": 320,
+          "status": true,
+          "stock": 75,
+          "category": "Familiares",
+          "thumbnail": "https://cuk-it.com/wp-content/uploads/2020/07/thumb03-low-1024x576.jpg"
+     },
+     {
+          "id": 12,
+          "code": "COD0012",
+          "title": "Hamburguesas grilladas",
+          "description": "con papas al romero",
+          "price": 90,
+          "status": true,
+          "stock": 42,
+          "category": "Individual",
+          "thumbnail": "https://cuk-it.com/wp-content/uploads/2020/07/thumb03-low-1024x576.jpg"
      }
 ]

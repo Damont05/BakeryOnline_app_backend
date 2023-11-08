@@ -8,12 +8,20 @@
 
 //import expressJs
 import express from 'express';
-import routeProducts from './routes/rProducts.js'
+import routeProducts from './routes/products.router.js'
+import routeCarts from './routes/carts.router.js'
 
 const app = express();
 
+//middlewares
+app.use(express.json());
+app.use(express.urlencoded({extended:true}));
+
+
 //main route products
-app.use('/', routeProducts);
+app.use('/api/products/', routeProducts);
+//main route carts
+app.use('/api/carts/', routeCarts);
 
 //port
 let port = process.env.PORT || 8080;

@@ -10,7 +10,6 @@
 //****************************************************************************************/
 
 //Required
-import { throws } from 'assert';
 import fs from 'fs';
 
 export default class CProductManager {
@@ -22,42 +21,31 @@ export default class CProductManager {
     }
 
     //Add products
-    async f_addProduct(code,title,description,price,thumbnail,stock){
+    async f_addProduct(product){
 
         try {
-
-            try{
-                //validar que todos los campos sean obligatorios para agregar un producto.
-                if(!code||!title||!description||!price||!thumbnail||!stock){
-                    console.log("******************************************");
-                    throw new Error();
-                }
-            }catch (e) {
-                console.error("Incomplete product parameters");
-                return;
-            }
-
+            
             let products = await this.f_getProducts(this.path);
-    
-            let id=1
-            if(products.length>0){    
-                id=products[products.length -1].id +1
-                
-                let existe=products.find(p=>p.code===code)
-                if(existe){
-                    console.log(`El producto con codigo ' ${code} ' ya está registrado...!!!`)
-                    return;
-                }
+     
+            let newProduct = {
+                id:product.id, 
+                code:product.code, 
+                title:product.title, 
+                description:product.description, 
+                price:product.price,
+                status:product.status, 
+                stock:product.stock,
+                category:product.category,
+                thumbnail:product.thumbnail
             }
-            products.push({id, code, title, description, price, thumbnail, stock})
+            products.push(newProduct)
             await fs.promises.writeFile(this.path, JSON.stringify(products,null,5))
 
         } catch (error) {
             console.log('ERROR: f_addProduct - ' + error);
-            
         }              
     }      
-    
+     
     //Get products
     async f_getProducts (){
         try {
@@ -91,18 +79,11 @@ export default class CProductManager {
     }
 
     //Update products
-    async f_updateProduct(id, field, value){
+    async f_updateProduct(products){
         try {
-            
-            let products = await this.f_getProducts(this.path);
-            const indexProduct = products.findIndex(product => product.id === id);
-            if(indexProduct !== -1){
-                products[indexProduct][field] = value;
-                await fs.promises.writeFile(this.path, JSON.stringify(products,null,5))
-                console.log("Product updated!");
-            }else{
-                throw new Error();
-            }
+
+            await fs.promises.writeFile(this.path, JSON.stringify(products,null,5))
+           
         } catch (error) {
             console.error("ERROR: f_updateProduct() - ID Product not found!");
             return;
@@ -130,3 +111,4 @@ export default class CProductManager {
         }
     }
 } //end class CProductManager
+

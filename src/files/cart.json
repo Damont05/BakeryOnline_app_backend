@@ -1,0 +1,46 @@
+[
+     {
+          "id_c": 1,
+          "products": [
+               {
+                    "id_p": 12,
+                    "quantity": 2
+               },
+               {
+                    "id_p": 11,
+                    "quantity": 3
+               }
+          ]
+     },
+     {
+          "id_c": 2,
+          "products": [
+               {
+                    "id_p": 9,
+                    "quantity": 3
+               }
+          ]
+     },
+     {
+          "id_c": 3,
+          "products": [
+               {
+                    "id_p": 3,
+                    "quantity": 1
+               },
+               {
+                    "id_p": 6,
+                    "quantity": 2
+               }
+          ]
+     },
+     {
+          "id_c": 4,
+          "products": [
+               {
+                    "id_p": 2,
+                    "quantity": 2
+               }
+          ]
+     }
+]

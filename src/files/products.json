@@ -130,5 +130,27 @@
           "stock": 42,
           "category": "Individual",
           "thumbnail": "https://cuk-it.com/wp-content/uploads/2020/07/thumb03-low-1024x576.jpg"
+     },
+     {
+          "id": 13,
+          "code": "COD0013",
+          "title": "Perro caliente",
+          "description": "con papas al romero",
+          "price": 50,
+          "status": true,
+          "stock": 25,
+          "category": "Individual",
+          "thumbnail": "https://cuk-it.com/wp-content/uploads/2020/07/thumb03-low-1024x576.jpg"
+     },
+     {
+          "id": 14,
+          "code": "COD0014",
+          "title": "Burrito",
+          "description": "con papas al romero",
+          "price": 50,
+          "status": true,
+          "stock": 25,
+          "category": "Individual",
+          "thumbnail": "https://cuk-it.com/wp-content/uploads/2020/07/thumb03-low-1024x576.jpg"
      }
 ]

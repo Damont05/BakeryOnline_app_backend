@@ -1,17 +1,18 @@
-//**************************************************************************************/
-//      |       Author      |  Desafio  |       descripción         |    Fecha   |
-//      |------------------|------------|---------------------------|------------|
-//         Luis D. Montero |      3    |  Servidor con ExpressJs   | 27-10-2023
-//      |-----------------|------------|---------------------------|------------|
-//        Luis D. Montero |      4     |  Primera entrega          | 05-11-2023
-//      |-----------------|------------|---------------------------|------------|
+//************************************************************************/
+//      |       Author     |       descripción         |    Fecha   |
+//      |------------------|---------------------------|------------|
+//         Luis D. Montero |  Servidor con ExpressJs   | 27-10-2023
+//      |----------------- |---------------------------|------------|
+//        Luis D. Montero  |  Primera entrega          | 05-11-2023
+//      |----------------- |---------------------------|------------|
 //   
-//****************************************************************************************/
+//**********************************************************************/
 
 
 //import expressJs
 import express from 'express';
 import CProductManager from '../class/ProductManager.class.js';
+import {io} from '../app.js';
 
 const router = express.Router();
 
@@ -92,6 +93,8 @@ router.post('/', async (req, res) =>{
         let newProduct =  {id, code, title, description, price, status, stock, category, thumbnail}
         await pm.f_addProduct(newProduct);
 
+        io.emit("newProduct",newProduct)
+
         res.setHeader('Content-Type', 'application/json');
         return res.status(201).json({ ok:true, message:'Product created' , newProduct });
    
@@ -164,7 +167,9 @@ router.delete('/:pid', async (req, res) =>{
             res.setHeader('Content-Type','application/json');
             return res.status(404).json({ ok:false, error: `ID Product: ' ${pid} ' not found`});
         }
+
         await pm.f_deleteProduct(pid);
+        io.emit("deleteProduct",pid )
 
         res.setHeader('Content-Type','application/json');
         res.status(200).json({  ok:true, message:'Deleted product' });

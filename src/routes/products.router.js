@@ -11,21 +11,22 @@
 
 //import expressJs
 import express from 'express';
-import CProductManager from '../class/ProductManager.class.js';
+// import CProductManager from '../class/ProductManager.class.js';
 import {io} from '../app.js';
+
+import { productsModel } from '../dao/models/products.model.js';
+import mongoose from 'mongoose';
 
 const router = express.Router();
 
-//instantiated class
-const pm =  new CProductManager;
 
 //******************************************/
 //route get products (path : /api/products)
 //******************************************/
 router.get('/', async (req, res) => {
-    
+    let products=[];
     try {
-        let products =  await pm.f_getProducts();
+        products =  await productsModel.find({});
         res.setHeader('Content-Type','application/json');
 
         if(req.query.limit){
@@ -45,19 +46,28 @@ router.get('/:pid', async (req, res) => {
 
     try {
         let { pid }  = req.params;
-        pid=parseInt(pid)
-        if(isNaN(pid)){
-            res.setHeader('Content-Type','application/json');
-            return  res.status(400).json({ ok:false, error: 'ID Product is not numeric'});
-        }
-        const product =  await pm.f_getProductById(pid);
        
-        if(product == undefined){
+
+        if(!mongoose.Types.ObjectId.isValid(pid)){
             res.setHeader('Content-Type','application/json');
-            return res.status(404).json({ ok:false, error: 'ID Product not found'});
+            return  res.status(400).json({ ok:false, error: 'ID Product is not valid'});
         }
+        let existe
+        try {
+            existe=await productsModel.findOne({_id:pid}) 
+            //console.log(existe)
+        } catch (error) {
+            res.setHeader('Content-Type','application/json');
+            return res.status(500).json({error:`Error server - try again later`, detalle: error.message})
+        }
+
+        if(!existe){
+            res.setHeader('Content-Type','application/json');
+            return res.status(400).json({error:`ID Product: ${pid} not found`})
+        }
+  
         res.setHeader('Content-Type','application/json');
-        return res.status(200).json({ ok:true, product });
+        return res.status(200).json({ ok:true, product:existe });
         
     } catch (error) {
         console.log('Error: GET:ID: ' + error);
@@ -76,28 +86,22 @@ router.post('/', async (req, res) =>{
             res .setHeader('Content-Type', 'application/json');
             return res.status(400).json({ ok:false, error: `fields are required` })
         }
-
-        let products =  await pm.f_getProducts();
-
+       
+        let products =  await productsModel.find({});
+     
         let existe = products.find(prod => prod.code === code)
         if (existe) {
             res.setHeader('Content-Type', 'application/json');
             return res.status(400).json({ ok:false, error: `El codigo de producto ' ${code} ' ya existe en BD` })
         }
-
-        let id = 1
-        if (products.length > 0) {
-            id = products[products.length - 1].id + 1
-        }
-        
-        let newProduct =  {id, code, title, description, price, status, stock, category, thumbnail}
-        await pm.f_addProduct(newProduct);
-
+        let newProduct
+        newProduct =  await productsModel.create({code, title, description, price, status, stock, category, thumbnail})
+           
         io.emit("newProduct",newProduct)
 
         res.setHeader('Content-Type', 'application/json');
         return res.status(201).json({ ok:true, message:'Product created' , newProduct });
-   
+        
     } catch (error) {
         console.log('Error: POST: ' + error);
     }
@@ -111,38 +115,44 @@ router.put('/:id', async (req, res) =>{
     try {
         
         let {id} = req.params;
-        id = parseInt(id);
-        if(isNaN(id)){
+
+        if(!mongoose.Types.ObjectId.isValid(id)){
             res.setHeader('Content-Type','application/json');
-            return res.status(400).json({ ok:false, error: 'ID Product is not numeric'});
+            return  res.status(400).json({ ok:false, error: 'ID Product is not valid'});
         }
-
-        let products =  await pm.f_getProducts();
-
-        let index = products.findIndex(p=>p.id ===id)
-        if(index === -1){
+        let existe
+        try {
+            existe=await productsModel.findOne({_id:id}) 
+        } catch (error) {
             res.setHeader('Content-Type','application/json');
-            return res.status(404).json({ ok:false, error: `ID Product: ' ${id} ' not found`});
-        }
-        
-        let allowedProperties = ["code", "title", "description", "price", "status", "stock", "category", "thumbnail"]
-        let keyEntry = Object.keys(req.body)
-
-        let valido = keyEntry.every(prop => allowedProperties.includes(prop))
-        if (!valido) {
-            res.setHeader('Content-Type', 'application/json');
-            return res.status(400).json({ error: `Other properties are not accepted`, allowedProperties })
+            return res.status(500).json({error:`Error server - try again later`, detalle: error.message})
         }
 
-        let productEdit = {...products[index], ...req.body}
+        if(!existe){
+            res.setHeader('Content-Type','application/json');
+            return res.status(400).json({error:`ID Product: ${id} not found`})
+        }
 
-        products[index] = productEdit;   
+        if(req.body._id || req.body.code){
+            res.setHeader('Content-Type','application/json');
+            return res.status(400).json({ok:false, error:`Cannot modify properties "_id" and "code"`})
+        }
 
-        await pm.f_updateProduct(products);
-
-        res.setHeader('Content-Type', 'application/json');
-        res.status(200).json({  ok:true, message:'Modified product', productEdit });
-        
+        let result
+        try {
+            result=await productsModel.updateOne({_id:id},req.body)
+            if(result.modifiedCount >0){
+                res.setHeader('Content-Type','application/json');
+                return res.status(200).json({ok:true, payload:"Modified product"});
+            }else{
+                res.setHeader('Content-Type','application/json');
+                return res.status(400).json({ok:false, error:`Modification error`})
+            }
+        } catch (error) {
+            res.setHeader('Content-Type','application/json');
+            return res.status(500).json({error:`Error server - try again later`, detalle: error.message})
+    
+        }
     } catch (error) {
         console.log('Error: PUT: ' + error);         
     }
@@ -155,25 +165,40 @@ router.delete('/:pid', async (req, res) =>{
     try {
 
         let {pid} = req.params;
-        pid = parseInt(pid);
-        if(isNaN(pid)){
+
+        if(!mongoose.Types.ObjectId.isValid(pid)){
             res.setHeader('Content-Type','application/json');
-            return res.status(400).json({ ok:false, error: 'ID Product is not numeric'});
+            return  res.status(400).json({ ok:false, error: 'ID Product is not valid'});
         }
-        let products =  await pm.f_getProducts();
-
-        let index = products.findIndex(p=>p.id ===pid)
-        if(index === -1){
+        let existe
+        try {
+            existe=await productsModel.findOne({_id:pid}) 
+        } catch (error) {
             res.setHeader('Content-Type','application/json');
-            return res.status(404).json({ ok:false, error: `ID Product: ' ${pid} ' not found`});
+            return res.status(500).json({error:`Error server - try again later`, detalle: error.message})
         }
 
-        await pm.f_deleteProduct(pid);
-        io.emit("deleteProduct",pid )
+        if(!existe){
+            res.setHeader('Content-Type','application/json');
+            return res.status(400).json({error:`ID Product: ${pid} not found`})
+        }
 
-        res.setHeader('Content-Type','application/json');
-        res.status(200).json({  ok:true, message:'Deleted product' });
-        
+        let result
+        try {
+            result=await productsModel.deleteOne({_id:pid},req.body)
+            console.log(result);
+            if(result.deletedCount>0){
+                res.setHeader('Content-Type','application/json');
+                return res.status(200).json({ok:true, payload:"Deleted product"});
+            }else{
+                res.setHeader('Content-Type','application/json');
+                return res.status(400).json({ok:false, error:`Deleted error`})
+            }
+        } catch (error) {
+            res.setHeader('Content-Type','application/json');
+            return res.status(500).json({error:`Error server - try again later`, detalle: error.message})
+    
+        }
     } catch (error) {
         console.log('Error: DELETE: ' + error);   
     }

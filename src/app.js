@@ -16,6 +16,9 @@ import { Server } from 'socket.io';
 import { router as viewsRouter } from './routes/views.router.js'
 import routeProducts from './routes/products.router.js'
 import routeCarts from './routes/carts.router.js'
+import routeUsers from './routes/users.router.js'
+
+import conn from './database.js';
 
 const app = express();
 //Port
@@ -35,6 +38,8 @@ app.use(express.static(path.join(__dirname,'/public'))); //static public
 app.use('/', viewsRouter);
 //main route products
 app.use('/api/products/', routeProducts);
+//main route products
+app.use('/api/users/', routeUsers);
 //main route carts
 app.use('/api/carts/', routeCarts);
 
@@ -45,7 +50,6 @@ const server =  app.listen(port, () =>{
 
 //server socket
 export const io = new Server(server);
-
 io.on("connection", socket => {
     console.log(`connected client`);
 })

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import CProductManager from '../class/ProductManager.class.js';
+import CProductManager from '../dao/manager/ProductManagerFS.js';
 export const router=Router()
 
 //instantiated class

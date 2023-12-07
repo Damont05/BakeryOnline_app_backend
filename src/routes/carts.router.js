@@ -7,12 +7,14 @@
 
 //import expressJs
 import express from 'express';
-import CCartsManager from '../class/CartsManager.class.js';
+//import model db
+import { CartManagerDB } from '../dao/manager/CartsManagerDB.js';
+import mongoose from 'mongoose';
 
 const router = express.Router();
 
-//instantiated class Cart
-const cm =  new CCartsManager;
+//instantiated class DB Cart
+const cm =  new CartManagerDB;
 
 //******************************************/
 //route get cart (api/carts/)
@@ -40,11 +42,12 @@ router.get('/:cid', async (req, res) => {
 
     try {
         let { cid }  = req.params;
-        cid=parseInt(cid)
-        if(isNaN(cid)){
+      
+        if(!mongoose.Types.ObjectId.isValid(cid)){
             res.setHeader('Content-Type','application/json');
-            return  res.status(400).json({ ok:false, error: 'ID Cart is not numeric'});
+            return  res.status(400).json({ ok:false, error: 'ID Cart is not valid'});
         }
+
         const cart =  await cm.f_getCartById(cid);
        
         if(cart == undefined){
@@ -59,18 +62,27 @@ router.get('/:cid', async (req, res) => {
     }
 });
 
-
 //*************************************/
 //route add Cart (api/carts/)
 //*************************************/
+// router.post('/', async (req, res) =>{
+//     try {
+
+//         let newCart
+//         newCart =  await cartModel.create({})
+//         if(newCart){
+//             res.setHeader('Content-Type', 'application/json');
+//             return res.status(201).json({ok:'true', message: "Cart created successfully", newCart})
+//         }else{
+//             return res.status(400).json({ok:'false', error: "The cart couldn't be created"});
+//         }
+//     } catch (error) {
+//         console.log('Error: POST: ' + error);
+//     }
+// });
 router.post('/', async (req, res) =>{
     try {
-        const carts = await cm.f_getCart();
-        let id = 1
-        if (carts.length > 0) {
-            id = carts[carts.length - 1].id_c + 1
-        }
-        const newCart = await cm.f_addCart(id);
+        const newCart = await cm.f_addCart();
         if(newCart){
             res.setHeader('Content-Type', 'application/json');
             return res.status(201).json({ok:'true', message: "Cart created successfully", newCart})
@@ -82,23 +94,63 @@ router.post('/', async (req, res) =>{
     }
 });
 
+
 //*****************************************************/
 //route add Product Cart (api/carts/:cid/product/:pid)
 //*****************************************************/
+// router.post('/:cid/product/:pid', async (req, res) => {
+//     let productId = req.params.pid;
+//     let id = req.params.cid
+
+//     // if(!mongoose.Types.ObjectId.isValid(id)){
+//     //     res.setHeader('Content-Type','application/json');
+//     //     return  res.status(400).json({ ok:false, error: 'ID Cart is not valid'});
+//     // }
+
+//     // if(!mongoose.Types.ObjectId.isValid(productId)){
+//     //     res.setHeader('Content-Type','application/json');
+//     //     return  res.status(400).json({ ok:false, error: "ID Product is not valid"});
+//     // }
+
+//     // const carts = JSON.parse(await fs.promises.readFile(this.path,"utf-8"));
+//     // const cart = carts.find(c => c.id_c === idCart);
+//     // !cart ?  false : true;
+
+//     let existeCart
+//     try {
+//         existeCart=await cartModel.findOne({_id:id}) 
+//         console.log("EXISTE: " , existeCart)
+//     } catch (error) {
+//         res.setHeader('Content-Type','application/json');
+//         return res.status(500).json({error:`Error server - try again later`, detalle: error.message})
+//     }
+
+//     const existingProductIndex = existeCart.products.findIndex(p => p.id_p === productId);
+//     console.log('existingProductIndex: ', existingProductIndex);
+
+//     if (existingProductIndex !== -1) {
+//         existeCart.products[existingProductIndex].quantity = (existeCart.products[existingProductIndex].quantity || 0) + 1;
+//     } else {
+//         existeCart.products.push({ id_p: productId, quantity: 1 });
+//     }
+//     let newCart
+//     newCart =  await cartModel.create({existeCart})
+
+// });
+
 router.post('/:cid/product/:pid', (req, res) => {
     let productId = req.params.pid;
     let id = req.params.cid
-    id = parseInt(id)
-    if (isNaN(id)) {
-        res.setHeader('Content-Type', 'application/json');
-        return res.status(400).json({ok:'false', error: "ID Cart is not valid"});
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        res.setHeader('Content-Type','application/json');
+        return  res.status(400).json({ ok:false, error: 'ID Cart is not valid'});
     }
-    productId = parseInt(productId)
-    if (isNaN(productId)) {
-        res.setHeader('Content-Type', 'application/json');
-        return res.status(400).json({ok:'false', error: "ID Product is not valid"});
+    if(!mongoose.Types.ObjectId.isValid(productId)){
+        res.setHeader('Content-Type','application/json');
+        return  res.status(400).json({ ok:false, error: 'ID Product is not valid'});
     }
-    if (cm.addProductToCart(id, productId)) {
+
+    if (cm.addProductToCart()) {
         res.setHeader('Content-Type', 'application/json');
         res.status(200).json({ ok:true, message: 'Product added to cart successfully'});
     } else {

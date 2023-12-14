@@ -1,9 +1,10 @@
 import { Router } from 'express';
-import CProductManager from '../dao/manager/ProductManagerFS.js';
+import {ProductManagerDB} from '../dao/mongo/ProductManagerDB.js'
 export const router=Router()
 
-//instantiated class
-const pm =  new CProductManager;
+//instantiated class DB 
+const pm =  new ProductManagerDB;
+
 
 router.get('/',async (req,res)=>{
 
@@ -22,5 +23,12 @@ router.get('/realtimeproducts',async (req,res)=>{
         products
     })
    
+})
+
+router.get('/chat',(req,res)=>{
+
+    res.status(200).render('chat',{
+        titulo:"Chat"
+    })
 })
 

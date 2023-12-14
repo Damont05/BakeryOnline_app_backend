@@ -1,9 +1,33 @@
-<h2>Home Page</h2>
-<a href="/realtimeproducts">Realtimeproducts</a>
-<hr>
+<div class="container">
 
-<ul>
-    {{#each products}}
-        <li>{{this.title}}</li>
-    {{/each}}
-</ul>
+        <!--navBar-->
+        <div class="nav-container">
+            <nav class="navbar">
+              <div class="navbar-logo">
+                <!--abajo el logo-->
+              </div>
+              <a href="/chat">Chat</a>
+              <h1 class="getCart" id="getCart">🧺<span id="cantCart" class="cant-cart"></span></h1>
+            </nav>
+          </div>
+      
+          <!--banner-->
+          <div class="banner">
+            <div class="banner-container">
+                
+              <h1>Entreamasados</h1>
+              <p>Panaderia online, del horno a tu puerta</p>
+            </div>
+          </div>
+        <!--content-->
+        <div id="content" class="content-style"></div>
+        <!--cart-container-canasta-->
+        <div id="cart-container" class="cart-container"></div>
+        <!--cart-container-pay-->
+        <div id="container-pay" class="cart-container"></div>
+
+    </div>
+
+    <div id="sweetAlert"></div>
+
+ <script src="js/home.js"></script> 

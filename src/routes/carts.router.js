@@ -8,7 +8,7 @@
 //import expressJs
 import express from 'express';
 //import model db
-import { CartManagerDB } from '../dao/manager/CartsManagerDB.js';
+import { CartManagerDB } from '../dao/mongo/CartsManagerDB.js';
 import mongoose from 'mongoose';
 
 const router = express.Router();
@@ -65,21 +65,6 @@ router.get('/:cid', async (req, res) => {
 //*************************************/
 //route add Cart (api/carts/)
 //*************************************/
-// router.post('/', async (req, res) =>{
-//     try {
-
-//         let newCart
-//         newCart =  await cartModel.create({})
-//         if(newCart){
-//             res.setHeader('Content-Type', 'application/json');
-//             return res.status(201).json({ok:'true', message: "Cart created successfully", newCart})
-//         }else{
-//             return res.status(400).json({ok:'false', error: "The cart couldn't be created"});
-//         }
-//     } catch (error) {
-//         console.log('Error: POST: ' + error);
-//     }
-// });
 router.post('/', async (req, res) =>{
     try {
         const newCart = await cm.f_addCart();
@@ -98,65 +83,27 @@ router.post('/', async (req, res) =>{
 //*****************************************************/
 //route add Product Cart (api/carts/:cid/product/:pid)
 //*****************************************************/
-// router.post('/:cid/product/:pid', async (req, res) => {
-//     let productId = req.params.pid;
-//     let id = req.params.cid
+router.post('/:cid/product/:pid',async   (req, res) => {
+    if (!req.params.cid || !req.params.pid || !req.body) {
+		throw new Error('Missing required arguments.')
+	}
+	try {
+		const cartId = req.params.cid
+		const productId = req.params.pid
+		const productQuantity = req.body.quantity
 
-//     // if(!mongoose.Types.ObjectId.isValid(id)){
-//     //     res.setHeader('Content-Type','application/json');
-//     //     return  res.status(400).json({ ok:false, error: 'ID Cart is not valid'});
-//     // }
+		const data = await cm.addProductToCart(cartId, productId, productQuantity)
 
-//     // if(!mongoose.Types.ObjectId.isValid(productId)){
-//     //     res.setHeader('Content-Type','application/json');
-//     //     return  res.status(400).json({ ok:false, error: "ID Product is not valid"});
-//     // }
-
-//     // const carts = JSON.parse(await fs.promises.readFile(this.path,"utf-8"));
-//     // const cart = carts.find(c => c.id_c === idCart);
-//     // !cart ?  false : true;
-
-//     let existeCart
-//     try {
-//         existeCart=await cartModel.findOne({_id:id}) 
-//         console.log("EXISTE: " , existeCart)
-//     } catch (error) {
-//         res.setHeader('Content-Type','application/json');
-//         return res.status(500).json({error:`Error server - try again later`, detalle: error.message})
-//     }
-
-//     const existingProductIndex = existeCart.products.findIndex(p => p.id_p === productId);
-//     console.log('existingProductIndex: ', existingProductIndex);
-
-//     if (existingProductIndex !== -1) {
-//         existeCart.products[existingProductIndex].quantity = (existeCart.products[existingProductIndex].quantity || 0) + 1;
-//     } else {
-//         existeCart.products.push({ id_p: productId, quantity: 1 });
-//     }
-//     let newCart
-//     newCart =  await cartModel.create({existeCart})
-
-// });
-
-router.post('/:cid/product/:pid', (req, res) => {
-    let productId = req.params.pid;
-    let id = req.params.cid
-    if(!mongoose.Types.ObjectId.isValid(id)){
-        res.setHeader('Content-Type','application/json');
-        return  res.status(400).json({ ok:false, error: 'ID Cart is not valid'});
-    }
-    if(!mongoose.Types.ObjectId.isValid(productId)){
-        res.setHeader('Content-Type','application/json');
-        return  res.status(400).json({ ok:false, error: 'ID Product is not valid'});
-    }
-
-    if (cm.addProductToCart()) {
-        res.setHeader('Content-Type', 'application/json');
-        res.status(200).json({ ok:true, message: 'Product added to cart successfully'});
-    } else {
-        res.setHeader('Content-Type', 'application/json');
-        res.status(404).json({ ok:false, error: 'Cart not found' });
-    }
+		res.status(201).send({ status: 'Success', payload: data })
+	} catch (error) {
+		if(error == 'Missing required arguments.'){
+			console.error(error)
+			res.status(400).json({ status: 'Error', payload: error }) 
+		} else {
+			console.error(error)
+			res.status(500).json({ status: 'Error', payload: error }) 
+		}
+	}
 });
 
 

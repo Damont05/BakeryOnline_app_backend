@@ -55,29 +55,48 @@ export class CartManagerDB{
     }
 
     // Adds a product to a cart, If the product is already in the cart, increase its quantity
-    async addProductToCart(idCart, idProduct) { 
-        try {
-            const carts = JSON.parse(await fs.promises.readFile(this.path,"utf-8"));
-            const cart = carts.find(c => c.id_c === idCart);
-            !cart ?  false : true;
+    async addProductToCart(cartId, productId, productQuantity) { 
+        if(!productId || !cartId){
+			throw new Error('Missing required arguments.')
+		}
+		
+		const formattedProductId = productId.trim()
+		const formattedCartId = cartId.trim()
+		
+		if(!formattedProductId || !formattedCartId){
+			throw new Error('Missing required arguments.')
+		}
 
-            const existingProductIndex = cart.products.findIndex(p => p.id_p === idProduct);
-
-            if (existingProductIndex !== -1) {
-                cart.products[existingProductIndex].quantity = (cart.products[existingProductIndex].quantity || 0) + 1;
-            } else {
-                cart.products.push({ id_p: idProduct, quantity: 1 });
-            }
-            const cartIndex = carts.findIndex(c => c.id_c === idCart);
-            carts[cartIndex] = cart;
-            
-            await fs.promises.writeFile(this.path, JSON.stringify(carts,null,5))
-        
-            return true;
-                
-        } catch (error) {
-          console.log(error.message);
-          throw new Error("Error updating the cart");
-        }
+		try{
+			const currentCart = await cartModel.findById(formattedCartId)
+			
+			if(!currentCart){
+				throw new Error('Cart does not exist.')
+			}
+			const indexProduct = currentCart.products.findIndex((item) => item.product._id == formattedProductId)
+				
+			if(indexProduct < 0){
+				const quantity = productQuantity || 1
+				const newProduct = {
+					product: formattedProductId,
+					quantity: quantity
+				}
+				currentCart.products.push(newProduct)
+				await currentCart.save()
+				return currentCart
+			} else {
+				const quantity = productQuantity || 1
+				const currentProduct = currentCart.products[indexProduct]
+				currentProduct.quantity += quantity
+				await currentCart.save()
+				return currentCart
+			}
+		}catch(error){
+			if( error == 'Missing required arguments.'){
+				throw error
+			} else {
+				throw new Error(error)
+			}
+		}
     }
 } //end class CCartsManager

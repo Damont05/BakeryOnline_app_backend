@@ -1,0 +1,568 @@
+body {
+    margin: 0px;
+}
+  /*navbar*/
+.nav-container {
+    position: sticky;
+    z-index: 3;
+    top: 0;
+}
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    height: 12vh;
+    background-color:   #030303;
+    opacity: 0.9;
+}
+div.navbar-logo {
+    width: 40px;
+    height:40px;
+    display: table;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+div.navbar-logo img {
+   
+    margin-left: 30px;
+    display: block;
+    width: 200%;
+    height: auto;
+}
+
+.ver-carrito {
+    font-size: 25px;
+    margin-right: 20px;
+    margin-top: 3.5vh;
+    cursor: pointer;
+}
+
+.cart-header{
+    display: flex;
+    justify-content: space-around;
+    background-color:   #373125 ;
+    color: #fff;
+    width: 100%;
+    margin-bottom: 9px;
+}
+.cart-header-title {
+    justify-self: start;
+}
+
+.cart-header-button {
+    text-align: center;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 20px;
+    width:  20%;
+    border: none;
+    color: red;
+}
+
+.cart-container{
+    width: 80%;
+    margin: 0 10%;
+    max-height: 88vh;
+    color: #fff;
+    background-color: #121212;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /*for the top*/
+    position: fixed;
+    overflow: auto;
+    z-index: 9;
+    top: 12vh;
+    scrollbar-color: none;
+}
+
+.cart-container > .cart-content{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 70%;
+    margin: 10px;
+}
+.cart-content{
+    margin-top: -50px;
+    background-color: rgb(48, 43, 43);
+}
+
+.cart-container > div > img {
+    height: 120px;
+    width: 120px;
+    border-radius: 60px;
+}
+
+  /*delete button product*/
+.delete-product {
+    cursor: pointer;
+}
+.delete-product:active {
+    box-shadow: 0 2px #fff4d5;
+    transform: translateY(5px);
+    color: #000000;
+}
+
+  /*CarritoCounter*/
+.cant-cart {
+    background-color: rgba(212, 212, 212, 0.315);
+    color: rgb(255, 255, 255);
+    border-radius: 60%;
+    font-size: 13px;
+    text-align: center;    
+    padding: 3px;
+    padding-left: 10px;
+    padding-right: 10px;
+    top: 45px;
+    right: 35px;
+    position: absolute;
+    display: none;
+}
+.sumar {
+    cursor: pointer;
+}
+.sumar:active {
+    box-shadow: 0 4px #00e548;
+    transform: translateY(5px);
+    color: #000000;
+}
+  
+.restar {
+    cursor: pointer;
+    color: red;
+}
+.restar:active {
+    box-shadow: 0 4px #ff0000;
+    transform: translateY(5px);
+    color: #000000;
+}
+.total-content {
+    font-size: 25px;
+    padding: 30px;
+    text-align: center;
+    padding-top: 20px;
+ 
+}
+
+.getCart {
+    font-size: 25px;
+    margin-right: 60px;
+    margin-top: 3.5vh;
+    cursor: pointer;
+  }
+
+.getCart:hover{
+    opacity: 0.6;
+}
+
+.pay-button{
+    border: none;
+    outline: 0;
+    padding:7px;
+    color: #000000;
+    background-color: #ffeac4;
+    text-align: center;
+    cursor: pointer;
+    width: 100%;
+    font-size: 18px;
+    border-radius: 44px;
+    margin-top: 20px;
+}
+.pay-button:hover{
+    opacity: 0.6;
+    background-color: #754f07;
+    color: #ffeac4;
+}
+.pay-button:active {
+    background-color: #9e5604;
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+    color: #000000;
+}
+    
+  /*Banner styles*/
+.banner {
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+      url("https://previews.123rf.com/images/kwanchaichaiudom/kwanchaichaiudom1711/kwanchaichaiudom171100026/91456666-panes-caseros-o-ingredientes-de-pan-croissant-y-panader%C3%ADa-en-el-fondo-de-madera-blanco-vista.jpg");
+}
+  
+.banner-container {
+    text-align: center;
+    padding: 15% 0;
+}
+  
+.banner h1 {
+    margin: 0;
+    color: white;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+    font-size: 500%;
+    font-weight: bold;
+}
+.banner h1:hover {
+    font-size: 520%;
+}
+
+.banner p {
+    font-size: 30px;
+    color: white;
+    opacity: 0.7;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+}
+  
+/*content*/
+.content-style {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin-top: 60px;
+    margin-left: 80px;
+    margin: 10px;
+}
+.card{
+    max-width: 300px;
+    margin: auto;
+    text-align: left;
+    font-family: arial;
+    border-radius: 16px;
+    margin : 30px;
+    background-color: #ffffff;
+} 
+.card > img {
+    width: 220px;
+    height: 210px;
+    border-bottom-left-radius: 30%;
+    border-bottom-right-radius: 30%;
+    border-top-right-radius: 3%;
+    border-top-left-radius: 3%;
+}
+.weight{
+    color: gray;
+    margin-top: -15px;
+    padding-left: 10px;
+
+}
+hr{
+    width:80%;
+    margin-top: -9px;
+    color: rgb(247, 136, 0);
+}
+.name-product{
+    padding-left: 10px;
+}
+.price {
+    color: rgb(0, 0, 0);
+    font-size: 22px;
+    margin: 12px;
+    margin-left: 20px;
+    float: left;
+
+}
+.agregar{
+    text-align: right;
+    margin: 12px;
+    margin-right: 20px;
+
+}
+.card button {
+    border: none;
+    outline: 0;
+    padding:7px;
+    color: #ffffff;
+    background-color: #000000;
+    text-align: center;
+    cursor: pointer;
+    width: 40%;
+    font-size: 18px;
+    border-radius: 44px;
+}
+.card button:hover{
+    opacity: 0.6;
+}
+.card button:active {
+    background-color: #9e5604;
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+    color: #000000;
+}
+
+
+.container{
+    background-image: url("https://img.freepik.com/fotos-premium/espigas-trigo-cerca-sobre-fondo-beige-planta-cereal-natural-concepto-tiempo-cosecha-endecha-plana_99432-6423.jpg?w=2000");
+    background-size: cover;
+    background-repeat: no-repeat;
+    max-width: 100%;
+}
+body {
+    font-family: Arial;
+    font-size: 17px;
+  }
+  
+  * {
+    box-sizing: border-box;
+  }
+  
+  .row {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap; 
+    flex-wrap: wrap;
+    margin: 0 -16px;
+  }
+  
+  .col-25 {
+    -ms-flex: 25%; 
+    flex: 25%;
+  }
+  
+  .col-50 {
+    margin-top: 30px;
+    -ms-flex: 50%; 
+    flex: 50%;
+  }
+  
+  .col-75 {
+    -ms-flex: 75%;
+    flex: 75%;
+  }
+  
+  .col-25,
+  .col-50,
+  .col-75 {
+    padding: 0 16px;
+  }
+  
+  .containe {
+    background-color: #e41818;
+    padding: 5px 20px 15px 20px;
+    border: 1px solid lightgrey;
+    border-radius: 3px;
+  }
+  
+  input[type=text] {
+    width: 100%;
+    margin-bottom: 20px;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 44px;
+  }
+  
+  label {
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .year{
+    margin-top: 1px;
+  }
+
+  .cvv{
+
+    margin-top: -10px;
+    background-color: #e41818;
+  }
+
+ 
+  .icon-container {
+    margin-bottom: 20px;
+    padding: 7px 0;
+    font-size: 24px;
+  }
+  
+  .btn {
+    outline: 0;
+    background-color: #754f07;
+    color: rgb(255, 255, 255);
+    padding: 12px;
+    border: none;
+    width: 80%;
+    cursor: pointer;
+    font-size: 18px;
+    border-radius: 44px;
+    margin-top: 10px;
+
+  }
+  
+  .btn:hover {
+    background-color: #45a049;
+  }
+  
+  a {
+    color: #2196F3;
+  }
+  
+  hr {
+    border: 1px solid lightgrey;
+  }
+  
+  span.price {
+    float: right;
+    color: grey;
+  }
+  .title-pay{
+    text-align: center;
+  }
+
+
+  /*Formulario de pago*/
+
+  .modal {
+    width: fit-content;
+    background-color: #9579672e;
+    height: fit-content;
+    box-shadow: 0px 187px 75px rgba(0, 0, 0, 0.01), 0px 105px 63px rgba(0, 0, 0, 0.05), 0px 47px 47px rgba(0, 0, 0, 0.09), 0px 12px 26px rgba(0, 0, 0, 0.1), 0px 0px 0px rgba(0, 0, 0, 0.1);
+    border-radius: 26px;
+    max-width: 450px;
+  }
+  
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+  }
+  
+  .payment--options {
+    width: calc(100% - 40px);
+    display: grid;
+    grid-template-columns: 33% 34% 33%;
+    gap: 20px;
+    padding: 10px;
+  }
+  
+  .payment--options button {
+    height: 55px;
+    background: #F2F2F2;
+    border-radius: 11px;
+    padding: 0;
+    border: 0;
+    outline: none;
+  }
+  
+  .payment--options button svg {
+    height: 18px;
+  }
+  
+  .payment--options button:last-child svg {
+    height: 22px;
+  }
+  
+  .separator {
+    width: calc(100% - 20px);
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    gap: 10px;
+    color: #8B8E98;
+    margin: 0 10px;
+  }
+  
+  .separator > p {
+    word-break: keep-all;
+    display: block;
+    text-align: center;
+    font-weight: 600;
+    font-size: 11px;
+    margin: auto;
+  }
+  
+  .separator .line {
+    display: inline-block;
+    width: 100%;
+    height: 1px;
+    border: 0;
+    background-color: #e8e8e8;
+    margin: auto;
+  }
+  
+  .credit-card-info--form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .input_container {
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .split {
+    display: grid;
+    grid-template-columns: 4fr 2fr;
+    gap: 15px;
+  }
+  
+  .split input {
+    width: 100%;
+  }
+  
+  .input_label {
+    font-size: 15px;
+    color: #8B8E98;
+    font-weight: 600;
+  }
+  
+  .input_field {
+    width: auto;
+    height: 40px;
+    padding: 0 0 0 16px;
+    border-radius: 9px;
+    outline: none;
+    background-color: #F2F2F2;
+    border: 1px solid #e5e5e500;
+    transition: all 0.3s cubic-bezier(0.15, 0.83, 0.66, 1);
+  }
+  
+  .input_field:focus {
+    border: 1px solid transparent;
+    box-shadow: 0px 0px 0px 2px #242424;
+    background-color: transparent;
+  }
+  
+  .purchase--btn {
+    border: none;
+    outline: 0;
+    padding:7px;
+    color: #000000;
+    background-color: #ffeac4;    
+    text-align: center;
+    cursor: pointer;
+    width: 100%;
+    font-size: 18px;
+    border-radius: 44px;
+    margin-top: 20px;
+  }
+
+  
+  .purchase--btn:hover {
+    opacity: 0.6;
+    background-color: #754f07;
+    color: #ffffff;
+  }
+  .purchase--btn:active {
+    background-color: #9e5604;
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+    color: #000000;
+}
+
+  
+  /* Reset input number styles */
+  .input_field::-webkit-outer-spin-button,
+  .input_field::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  
+  .input_field[type=number] {
+    -moz-appearance: textfield;
+  }
+ 
+   
+   /*FIN formulario de pago*/

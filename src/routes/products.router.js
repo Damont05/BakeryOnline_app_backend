@@ -15,18 +15,21 @@ import express from 'express';
 import {io} from '../app.js';
 
 import { productsModel } from '../dao/models/products.model.js';
+import {ProductManagerDB} from '../dao/mongo/ProductManagerDB.js'
 import mongoose from 'mongoose';
 
 const router = express.Router();
 
 
+//instantiated class DB Cart
+const pm =  new ProductManagerDB;
+
 //******************************************/
 //route get products (path : /api/products)
 //******************************************/
 router.get('/', async (req, res) => {
-    let products=[];
     try {
-        products =  await productsModel.find({});
+        let products =  await pm.f_getProducts();
         res.setHeader('Content-Type','application/json');
 
         if(req.query.limit){
@@ -47,28 +50,19 @@ router.get('/:pid', async (req, res) => {
     try {
         let { pid }  = req.params;
        
-
         if(!mongoose.Types.ObjectId.isValid(pid)){
             res.setHeader('Content-Type','application/json');
             return  res.status(400).json({ ok:false, error: 'ID Product is not valid'});
         }
-        let existe
-        try {
-            existe=await productsModel.findOne({_id:pid}) 
-            //console.log(existe)
-        } catch (error) {
+        const product =  await pm.f_getProductById(pid);
+       
+        if(product == undefined){
             res.setHeader('Content-Type','application/json');
-            return res.status(500).json({error:`Error server - try again later`, detalle: error.message})
+            return res.status(404).json({ ok:false, error: 'ID Product not found'});
         }
-
-        if(!existe){
-            res.setHeader('Content-Type','application/json');
-            return res.status(400).json({error:`ID Product: ${pid} not found`})
-        }
-  
         res.setHeader('Content-Type','application/json');
-        return res.status(200).json({ ok:true, product:existe });
-        
+        return res.status(200).json({ ok:true, product });
+  
     } catch (error) {
         console.log('Error: GET:ID: ' + error);
     }
@@ -86,17 +80,25 @@ router.post('/', async (req, res) =>{
             res .setHeader('Content-Type', 'application/json');
             return res.status(400).json({ ok:false, error: `fields are required` })
         }
-       
-        let products =  await productsModel.find({});
-     
-        let existe = products.find(prod => prod.code === code)
-        if (existe) {
-            res.setHeader('Content-Type', 'application/json');
-            return res.status(400).json({ ok:false, error: `El codigo de producto ' ${code} ' ya existe en BD` })
+        
+        console.log('code: ',code);
+        let products =  await pm.f_getProducts();
+        //console.log('products: ',products);
+        //console.log('products: ',typeof(products));
+        let encontrado;
+        for(let k in products) {
+            if(products[k].code == code){
+                console.log('existe');
+                encontrado = true;
+            }
         }
-        let newProduct
-        newProduct =  await productsModel.create({code, title, description, price, status, stock, category, thumbnail})
-           
+        if (encontrado){
+             res.setHeader('Content-Type', 'application/json');
+             return res.status(400).json({ ok:false, error: `El codigo de producto ' ${code} ' ya existe en BD` })
+        }
+
+        let newProduct =  {code, title, description, price, status, stock, category, thumbnail}
+        await pm.f_addProduct(newProduct);
         io.emit("newProduct",newProduct)
 
         res.setHeader('Content-Type', 'application/json');

@@ -17,6 +17,8 @@ import { router as viewsRouter } from './routes/views.router.js'
 import routeProducts from './routes/products.router.js'
 import routeCarts from './routes/carts.router.js'
 import routeUsers from './routes/users.router.js'
+import chatRouter from './routes/chat.router.js'
+
 
 import conn from './database.js';
 
@@ -42,6 +44,8 @@ app.use('/api/products/', routeProducts);
 app.use('/api/users/', routeUsers);
 //main route carts
 app.use('/api/carts/', routeCarts);
+//chat
+//app.use('/chat', chatRouter);
 
 //Server
 const server =  app.listen(port, () =>{
@@ -52,4 +56,15 @@ const server =  app.listen(port, () =>{
 export const io = new Server(server);
 io.on("connection", socket => {
     console.log(`connected client`);
+    //Routes
+    //route views
+    app.use('/', viewsRouter);
+    //main route products
+    app.use('/api/products/', routeProducts);
+    //main route products
+    app.use('/api/users/', routeUsers);
+    //main route carts
+    app.use('/api/carts/', routeCarts);
+    //chat
+    app.use('/chat', chatRouter(io));
 })

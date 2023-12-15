@@ -8,7 +8,7 @@
 console.log('ENTRO AL home.JS');
 
 // //Required
-import { productsModel } from '/src/dao/models/products.model.js';
+//import  productsModel  from '/src/dao/models/products.model.js';
 
  
 //Se almacena(getlocalstorage) el localstorage para trabajar siempre con los mismos datos 
@@ -28,11 +28,10 @@ const IVA = 0.21;
 showProducts();
 
 async function showProducts() { 
-    console.log('entro al function showProducts' );
 
     try {
         //json productos
-        const url = await productsModel.find({});
+        const url = 'http://localhost:8080/api/products'
         console.log(url);
 
         //get al json con los productos

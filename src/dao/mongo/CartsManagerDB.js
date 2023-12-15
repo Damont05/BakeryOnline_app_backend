@@ -32,7 +32,7 @@ export class CartManagerDB{
     //Get products cart
     async f_getCart(){
         try {
-            const result = await cartModel.find({});
+            const result = await cartModel.find({})
             return result;
         } catch (error) {
             console.log('ERROR: f_getCart - ' + error);

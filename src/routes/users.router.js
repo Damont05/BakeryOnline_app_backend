@@ -10,7 +10,7 @@ const router = express.Router();
 router.get('/', async(req, res) => {
     let users=[];
     try {
-        users = await usersModel.find({});
+        users = await usersModel.find( );
     } catch (error) {
          console.log(error.message);
     }
@@ -21,14 +21,13 @@ router.get('/', async(req, res) => {
 })
 
 router.post('/', async (req, res) => {
-    let {name, email} = req.body
-    if(!name || !email){
+    let {dni,name, lastname,age,phone,email,addres} = req.body
+    if(!dni || !name || !lastname || !age || !phone || !email || !addres){
         res.setHeader('Content-Type','application/json');
-        return res.status(404).json({ ok:false, error: 'Faltan datos'});
+        return res.status(404).json({  ok:false, error: `fields are required`});
     }
-
     try {
-        let newUser = await usersModel.create({name, email})
+        let newUser = await usersModel.create({dni,name, lastname,age,phone,email,addres})
         res.setHeader('Content-Type','application/json');
         return res.status(200).json({ ok:true, newUser});
     } catch (error) {

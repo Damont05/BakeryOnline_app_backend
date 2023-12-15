@@ -20,7 +20,27 @@
             </div>
           </div>
         <!--content-->
-        <div id="content" class="content-style"></div>
+        <div id="content" class="content-style">
+
+          <ul>
+              {{#each products}}
+                  <li>{{this.title}} - {{this.description}} - {{this.price}}</li>
+              {{/each}}
+          </ul>
+          <br>
+            <a href="/?pag=1">Pag.1</a>
+            {{#if hasPrevPage}}
+              <a href="/?pag={{prevPage}}">Previos</a>
+            {{/if}}
+
+            {{#if hasNextPage}}
+              <a href="/?pag={{nextPage}}">Next</a>
+            {{/if}}
+            <a href="/?pag={{totalPages}}">Ult.Pag</a>
+          
+        </div>
+
+
         <!--cart-container-canasta-->
         <div id="cart-container" class="cart-container"></div>
         <!--cart-container-pay-->
@@ -30,4 +50,4 @@
 
     <div id="sweetAlert"></div>
 
- <script src="js/home.js"></script> 
+ <script type="module" src="js/home.js"></script> 

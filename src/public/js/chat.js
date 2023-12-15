@@ -1,6 +1,3 @@
-
-console.log('ENTRO AL CHAT.JS');
-
 let user = ''
 
 Swal.fire({

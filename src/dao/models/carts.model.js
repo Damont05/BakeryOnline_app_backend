@@ -16,4 +16,18 @@ const cartSchema = new mongoose.Schema({
 	]
 }, {timestamps: true })
 
+// Methods populate
+cartSchema.pre("findOne", function(){
+	this.populate({
+		path:'products.product',
+	})
+});
+ 
+cartSchema.pre("find", function(){
+	this.populate({
+		path:'products.product',
+	})
+	this.lean()
+});
+
 export const cartModel = mongoose.model(cartCollection,cartSchema)

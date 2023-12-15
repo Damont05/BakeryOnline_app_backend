@@ -12,7 +12,7 @@
 //import expressJs
 import express from 'express';
 // import CProductManager from '../class/ProductManager.class.js';
-import {io} from '../app.js';
+//import {io} from '../app.js';
 
 import { productsModel } from '../dao/models/products.model.js';
 import {ProductManagerDB} from '../dao/mongo/ProductManagerDB.js'
@@ -99,7 +99,7 @@ router.post('/', async (req, res) =>{
 
         let newProduct =  {code, title, description, price, status, stock, category, thumbnail}
         await pm.f_addProduct(newProduct);
-        io.emit("newProduct",newProduct)
+        //io.emit("newProduct",newProduct)
 
         res.setHeader('Content-Type', 'application/json');
         return res.status(201).json({ ok:true, message:'Product created' , newProduct });

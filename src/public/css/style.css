@@ -216,7 +216,7 @@ div.navbar-logo img {
   
 /*content*/
 .content-style {
-    display: block;
+    display: flex;
     text-align: center;
     justify-content: space-around;
     flex-wrap: wrap;
@@ -624,3 +624,14 @@ a:hover {
     margin-left: 10px;
   }
   
+  /*style paginate*/
+  .paginate{
+    width: 50%;    
+    text-align: center;
+    margin: 0 auto;
+    margin-bottom: 30px;
+  }
+
+  .paginate a {
+    color: #575454;
+  }

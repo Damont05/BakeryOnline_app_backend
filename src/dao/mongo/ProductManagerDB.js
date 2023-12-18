@@ -19,6 +19,61 @@ export class ProductManagerDB {
         this.lista = [];
     }
 
+    getProducts = async (limit, page, sort, query) => {
+        console.log('DATOOOOS', limit);
+		let formatLimit = limit ? parseInt(limit) : 9
+		let formatPage = page ? parseInt(page) : 1
+		
+		let formatQuery 
+		const categories = ['Panaderia', 'Individual', 'Compartir']
+		if(categories.includes(query)){
+			formatQuery = { category: query }
+		} else if (query === 'true' || query === 'false'){
+			formatQuery = { status: query }
+		} else {
+			formatQuery = {}
+		}
+		
+		let formatSort 
+		if(sort === 'asc'){
+			formatSort = '1'
+		}else if(sort === 'desc'){
+			formatSort = '-1'
+		}
+		
+		try {
+			const products = await productsModel.paginate(formatQuery, {page: formatPage, limit: formatLimit, sort: { price: formatSort }, lean: true})
+
+			products.prevLink = products.hasPrevPage ? `?page=${products.prevPage}` : ''
+			products.nextLink = products.hasNextPage ? `?page=${products.nextPage}` : ''
+
+			if(products.totalPages > 1){
+				products.totalPagesArray = []
+				
+				for (let i = 1; i <= products.totalPages; i++) {
+					products.totalPagesArray.push(i)
+				}
+			} 
+			
+		// 	products.payload = products.docs
+		// 	delete products.docs
+			
+		// 	// Crear descripcion corta
+		// 	for (const product of products.payload) {
+		// 		const descrip = product.description
+		// 		if (descrip.length > 90) {
+		// 			const shorterDescription = descrip.slice(0, 90)
+		// 			const formatedShorterDescription = shorterDescription.trim()
+		// 			product.shortDescription = formatedShorterDescription
+		// 		}
+		// 	}			
+		// 	return products
+
+		} catch (error) {
+			throw new Error(error)
+		}
+	}
+
     //Add products
     async f_addProduct(product){
 

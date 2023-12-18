@@ -30,71 +30,30 @@ showProducts();
 async function showProducts() { 
 
     try {
-        //json productos
-        const url = 'http://localhost:8080/api/products'
-        console.log(url);
-
-        //get al json con los productos
-        await fetch(url)
-            .then( (res) => res.json())
-            .then( (data) => {
-            //recorriendo array para mostrar contenido, creando nodo hijo
-            data.forEach((produc) => {
-                const{id,name,price,weight,cant,img} =  produc;
-                let divProducts = document.createElement("div");
-                divProducts.className = "card";  
-            
-                divProducts.innerHTML =  `
-                    <img src="${produc.img}">
-                    <h3 class="name-product">${produc.name}</h3>
-                    <h6 class="weight">${produc.weight}</h6>
-                    <hr>
-                    <div class="price">$${produc.price}</div>
-                `; 
-                //se agrega el nodo hijo al nodo padre
-                content.append(divProducts);
-                let btnDiv = document.createElement("div");
-                let btnAdd = document.createElement("button");
-                btnAdd.innerText = "agregar";
-                btnDiv.className = "agregar";
-                btnDiv.append(btnAdd);
-                divProducts.append(btnDiv);
-
-                //Agregando evento click al boton para instanciar la clase "Cart" y almacenar el pedido en un arrays
-                btnAdd.addEventListener("click",() =>{
-                    const repeat = listOrder.some((repeatProduct) => repeatProduct.id === produc.id);
-                    if (repeat) {
-                        listOrder.map((prod) => {
-                            if (prod.id === produc.id) {
-                                prod.cant++; 
-                            } 
-                        });
-                    } else { 
-                        const createOrder = new Cart(produc.id,produc.img,produc.name,produc.cant,produc.price);
-                        Cart.saveOrder(createOrder,listOrder);
-                        cartCount();
-                        localSave();
-                    }
-                    //Agregando alerta con libreria toastify 
-                    Toastify({
-                        text: "Agregado a la canasta",
-                        duration: 1000,
-                        newWindow: true,
-                        close: true,
-                        gravity: "bottom", 
-                        position: "right", 
-                        stopOnFocus: true, 
-                        style: {
-                        background: "#ee9246",
-                        color:"#000000"
-                        }
-                    }).showToast();
-                });
-            });
-        });
+    //     data.forEach((produc) => {
+    //         const{id,name,price,weight,cant,img} =  produc;
+    //         let divProducts = document.createElement("div");
+    //         divProducts.className = "card";  
+    //         //{code, title, description, price, status, stock, category, thumbnail}
+    //         divProducts.innerHTML =  `
+    //             <img src="${produc.thumbnail}">
+    //             <h3 class="name-product">${produc.title}</h3>
+    //             <h6 class="weight">${produc.description}</h6>
+    //             <hr>
+    //             <div class="price">$${produc.price}</div>
+    //         `; 
+    //         //se agrega el nodo hijo al nodo padre
+    //         content.append(divProducts);
+    //         let btnDiv = document.createElement("div");
+    //         let btnAdd = document.createElement("button");
+    //         btnAdd.innerText = "agregar";
+    //         btnDiv.className = "agregar";
+    //         btnDiv.append(btnAdd);
+    //         divProducts.append(btnDiv);
+    //     })
         
     } catch (error) {
-        console.log("error inicial, al cargar productos o al guardarlos en la canasta de pedidos");
+        console.log("error inicial, al cargar productos o al guardarlos en la canasta de pedidos", error)
     }
 }
 

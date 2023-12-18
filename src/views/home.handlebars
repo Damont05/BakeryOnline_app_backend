@@ -21,25 +21,28 @@
           </div>
         <!--content-->
         <div id="content" class="content-style">
-
-          <ul>
-              {{#each products}}
-                  <li>{{this.title}} - {{this.description}} - {{this.price}}</li>
-              {{/each}}
-          </ul>
-          <br>
-            <a href="/?pag=1">Pag.1</a>
-            {{#if hasPrevPage}}
-              <a href="/?pag={{prevPage}}">Previos</a>
-            {{/if}}
-
-            {{#if hasNextPage}}
-              <a href="/?pag={{nextPage}}">Next</a>
-            {{/if}}
-            <a href="/?pag={{totalPages}}">Ult.Pag</a>
-          
+            {{#each products}}
+                  <div class="card">
+                      <img src="{{this.thumbnail}}">
+                      <h3 class="name-product">{{this.title}}</h3>
+                      <h6 class="weight">{{this.description}}</h6>
+                      <hr>
+                      <div class="price">${{this.price}}.0</div>
+                      <div class="agregar">
+                          <button>Agregar</button>
+                      </div>
+                  </div>
+            {{/each}}
         </div>
-
+        <div class="paginate">
+            <a>{{page}} de {{totalPages}}</a>
+            {{#if hasPrevPage}}
+              <a href="/?pag={{prevPage}}">⬅️</a>
+            {{/if}}
+            {{#if hasNextPage}}
+              <a href="/?pag={{nextPage}}">➡️</a>
+            {{/if}}
+        </div>
 
         <!--cart-container-canasta-->
         <div id="cart-container" class="cart-container"></div>

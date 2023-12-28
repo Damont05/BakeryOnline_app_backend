@@ -6,7 +6,7 @@ const router = Router()
 const chatRouter = (io) => {
 	chatSocket(io)
 	
-	router.get('/',(req,res)=>{
+	router.get('/chat',(req,res)=>{
 
         res.status(200).render('chat',{
             estilo:"style-chat"

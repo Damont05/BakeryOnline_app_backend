@@ -19,7 +19,7 @@ const cm =  new CartManagerDB;
 //******************************************/
 //route get cart (api/carts/)
 //******************************************/
-router.get('/', async (req, res) => {
+router.get('/cart', async (req, res) => {
     
     try {
         let carts =  await cm.f_getCart();
@@ -38,7 +38,7 @@ router.get('/', async (req, res) => {
 //***********************************************/
 //route get cart for id (api/cart/:pid)
 //***********************************************/
-router.get('/:cid', async (req, res) => {
+router.get('/id/:cid', async (req, res) => {
 
     try {
         let { cid }  = req.params;

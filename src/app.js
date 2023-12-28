@@ -12,6 +12,8 @@ import path from 'path';
 import express from 'express';
 import { engine } from 'express-handlebars';
 import { Server } from 'socket.io'
+import sessions from 'express-session'
+import mongoStore from 'connect-mongo'
 
  
 import { router as viewsRouter } from './routes/views.router.js'
@@ -24,6 +26,21 @@ import chatRouter from './routes/chat.router.js'
 import conn from './database.js';
 
 const app = express();
+
+app.use(sessions(
+    {
+        secret:"codercoder123",
+        resave: true, saveUninitialized: true,
+        store: mongoStore.create(
+            {
+                mongoUrl:'mongodb+srv://user_coder:Coder123@cluster0.tcbhngn.mongodb.net/?retryWrites=true&w=majority',
+                mongoOptions:{dbName : 'ecommerce'},
+                ttl:3600
+            }
+        )
+    }
+))
+
 //Port
 let port = process.env.PORT || 8080;
 

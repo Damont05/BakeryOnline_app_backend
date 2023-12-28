@@ -1,11 +1,20 @@
 import { Router } from 'express';
 import {productsModel} from '../dao/models/products.model.js'
-import {productsModel} from '../dao/models/'
+import {cartModel} from '../dao/models/carts.model.js'
+
 import {usersModel} from '../dao/models/users.model.js'
 
 export const router=Router()
 
-router.get('/products',async (req,res)=>{
+//midd
+const auth=(req, res, next)=>{
+    if(!req.session.usuario){
+        res.redirect('/')
+    }
+    next()
+}
+
+router.get('/home',auth,async (req,res)=>{
     let pag = 1;
     if(req.query.pag){
         pag=req.query.pag
@@ -14,12 +23,14 @@ router.get('/products',async (req,res)=>{
     
     let products
     try {
-        //products =  await productsModel.find().lean();
-        products = await productsModel.paginate({},{lean:true,limit:6, page:pag })
+        products =  await productsModel.find().lean();
+        /*products = await productsModel.paginate({},{lean:true,limit:6, page:pag })
         console.log(products);
         let {totalPages,page,hasNextPage,hasPrevPage,prevPage,nextPage} = products
         res.status(200).render('home', { products:products.docs,totalPages,page,hasNextPage,hasPrevPage,prevPage,nextPage, 
-             estilo:"style"})
+             estilo:"style"})*/
+
+       res.status(200).render('home', {products, estilo:"style"}) 
        
     } catch (error) {
         console.log(error);
@@ -27,19 +38,20 @@ router.get('/products',async (req,res)=>{
     }
 })
 
+/*
 router.get('/:cid', async (req, res) => {
 	if(!req.params.cid) return 
 
 	try{
 		const cartId = req.params.cid
 
-		const currentCart = await cartManager.getCartById(cartId)
+		const currentCart = await cartModel.findOne({_id:cartId}) 
 
-		res.render('products/cart', { data: currentCart, style: 'cart'})
+		res.render('cart', { data: currentCart})
 	}catch(error){
-		res.render('errors/error', { error: error })
+		console.log(error);
 	}
-})
+})*/
 
 //****ROUTE VIEW USER*****
 router.get('/user',async (req,res)=>{
@@ -62,4 +74,19 @@ router.get('/realtimeproducts',async (req,res)=>{
 })
 
 
+router.get('/register',(req,res)=>{
 
+    let {error}=req.query
+
+    res.setHeader('Content-Type','text/html')
+    res.status(200).render('register', {error})
+})
+
+
+router.get('/',(req,res)=>{
+
+    let {error, mensaje}=req.query
+
+    res.setHeader('Content-Type','text/html')
+    res.status(200).render('login', {error, mensaje})
+})

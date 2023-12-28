@@ -3,13 +3,10 @@ import mongoose from "mongoose";
 const userCollection  = 'users'
 const usersSchema = new mongoose.Schema(
     {
-        dni:        { type:String, unique:true, require:true, },
-        name:       String,
-        lastname:   String,
-        age:        Number,
-        phone:      String,
+        
+        name:      String,
         email:      { type:String, require:true, unique:true },
-        addres:     String,
+        password:   String,
         deleted: {
             type:Boolean, default:false
         }

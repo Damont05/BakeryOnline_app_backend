@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { usersModel } from '../dao/models/users.model.js';
 import crypto from 'crypto'
+import sessions from 'express-session'
+
 export const router=Router()
 
 router.post('/', async(req, res)=>{
@@ -9,10 +11,12 @@ router.post('/', async(req, res)=>{
     if(!email || !password){
         return res.redirect('/?error=Complete todos los datos')
     }
-
-    password=crypto.createHmac("sha256", "codercoder123").update(password).digest("hex")
-
-    let usuario=await usersModel.findOne({email, password})
+    console.log('email: ', email);
+    console.log('password: ', password);
+    password=crypto.createHmac("sha256", "bakery123").update(password).digest("hex")
+    console.log('password2: ', password);
+    let usuario=await usersModel.findOne({email})
+    console.log('usuario: ', usuario);
     if(!usuario){
         return res.redirect(`/?error=credenciales incorrectas`)
     }
@@ -33,7 +37,7 @@ router.post('/register',async(req,res)=>{
     }
 
     let regMail=/^(([^<>()\[\]\\.,;:\s@”]+(\.[^<>()\[\]\\.,;:\s@”]+)*)|(“.+”))@((\[[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}])|(([a-zA-Z\-0–9]+\.)+[a-zA-Z]{2,}))$/
-    console.log(regMail.test(email))
+    console.log("REGIS----: " , regMail.test(email))
     if(!regMail.test(email)){
         return res.redirect('/register?error=Mail con formato incorrecto...!!!')
     }
@@ -43,11 +47,15 @@ router.post('/register',async(req,res)=>{
         return res.redirect(`/register?error=Existen usuarios con email ${email} en la BD`)
     }
     
-    password=crypto.createHmac("sha256", "codercoder123").update(password).digest("hex")
+    password=crypto.createHmac("sha256", "bakery123").update(password).digest("hex")
     let usuario
     try {
+        console.log('name: ',name);
+        console.log('email: ',email);
+        console.log('password: ',password);
         usuario=await usersModel.create({name, email, password})
-        res.redirect(`/?mensaje=Usuario ${email} registrado correctamente`)
+        console.log('usuario: ',usuario);
+        // res.redirect(`/?mensaje=Usuario ${email} registrado correctamente`)
         
     } catch (error) {
         res.redirect('/register?error=Error inesperado. Reintente en unos minutos')

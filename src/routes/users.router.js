@@ -21,13 +21,13 @@ router.get('/', async(req, res) => {
 })
 
 router.post('/', async (req, res) => {
-    let {dni,name, lastname,age,phone,email,addres} = req.body
-    if(!dni || !name || !lastname || !age || !phone || !email || !addres){
+    let {name,email,password} = req.body
+    if(!name || !email || !password){
         res.setHeader('Content-Type','application/json');
         return res.status(404).json({  ok:false, error: `fields are required`});
     }
     try {
-        let newUser = await usersModel.create({dni,name, lastname,age,phone,email,addres})
+        let newUser = await usersModel.create({name, email, password})
         res.setHeader('Content-Type','application/json');
         return res.status(200).json({ ok:true, newUser});
     } catch (error) {

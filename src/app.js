@@ -15,7 +15,7 @@ import { Server } from 'socket.io'
 import sessions from 'express-session'
 import mongoStore from 'connect-mongo'
 
- 
+import { router as sessionRouter } from './routes/session.router.js';
 import { router as viewsRouter } from './routes/views.router.js'
 import routeProducts from './routes/products.router.js'
 import routeCarts from './routes/carts.router.js'
@@ -95,6 +95,7 @@ const run = async () => {
 
 		//Routes
         //route views
+        app.use('/api/sessions', sessionRouter)
         app.use('/', viewsRouter);
         //main route products
         app.use('/api/products/', routeProducts);

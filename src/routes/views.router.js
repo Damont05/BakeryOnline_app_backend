@@ -14,6 +14,14 @@ const auth=(req, res, next)=>{
     next()
 }
 
+const auth2=(req, res, next)=>{
+    if(req.session.usuario){
+        return res.redirect('/home')
+    }
+
+    next()
+}
+
 router.get('/home',auth,async (req,res)=>{
     let pag = 1;
     if(req.query.pag){
@@ -74,7 +82,7 @@ router.get('/realtimeproducts',async (req,res)=>{
 })
 
 
-router.get('/register',(req,res)=>{
+router.get('/register',auth2,(req,res)=>{
 
     let {error}=req.query
 
@@ -83,7 +91,7 @@ router.get('/register',(req,res)=>{
 })
 
 
-router.get('/',(req,res)=>{
+router.get('/',auth2,(req,res)=>{
 
     let {error, mensaje}=req.query
 

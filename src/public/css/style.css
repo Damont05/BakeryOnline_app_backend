@@ -31,6 +31,17 @@ div.navbar-menu {
 
 
 }
+.menu li{
+  display:inline;
+  padding:4px;
+  margin:30px;
+  background-color:black;
+}
+
+.menu{
+  margin-top: 20px;
+}
+
 div.navbar-menu a:hover {
   cursor: pointer;
   font-size: 20px;
@@ -826,4 +837,184 @@ input {
   text-align: center;
   padding: 10px;
   margin-bottom: 30px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#contenedor {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  margin: 0;
+  padding: 0;
+  min-width: 100vw;
+  min-height: 100vh;
+  width: 100%;
+  height: 100%;
+}
+
+#central {
+  max-width: 320px;
+  width: 100%;
+}
+
+.titulo {
+  font-size: 250%;
+  color:#000000;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+#login {
+  width: 100%;
+  padding: 50px 30px;
+  background-color: #fff1d4;
+  
+  -webkit-box-shadow: 0px 0px 5px 5px rgba(0,0,0,0.15);
+  -moz-box-shadow: 0px 0px 5px 5px rgba(0,0,0,0.15);
+  box-shadow: 0px 0px 5px 5px rgba(0,0,0,0.15);
+  
+  border-radius: 3px 3px 3px 3px;
+  -moz-border-radius: 3px 3px 3px 3px;
+  -webkit-border-radius: 3px 3px 3px 3px;
+  
+  box-sizing: border-box;
+}
+
+#login input {
+  font-family: 'Overpass', sans-serif;
+  font-size: 110%;
+  color: #1b262c;
+  
+  display: block;
+  width: 100%;
+  height: 40px;
+  
+  margin-bottom: 10px;
+  padding: 5px 5px 5px 10px;
+  
+  box-sizing: border-box;
+  
+  border: none;
+  border-radius: 3px 3px 3px 3px;
+  -moz-border-radius: 3px 3px 3px 3px;
+  -webkit-border-radius: 3px 3px 3px 3px;
+}
+
+#login input::placeholder {
+  font-family: 'Overpass', sans-serif;
+  color: #ffad5b;
+}
+
+#login button {
+  font-family: 'Overpass', sans-serif;
+  font-size: 110%;
+  color:#1b262c;
+  width: 100%;
+  height: 40px;
+  border: none;
+  
+  border-radius: 3px 3px 3px 3px;
+  -moz-border-radius: 3px 3px 3px 3px;
+  -webkit-border-radius: 3px 3px 3px 3px;
+  
+  
+  margin-top: 10px;
+}
+
+#login button:hover {
+  background-color: #0f4c75;
+  color:#bbe1fa;
+}
+
+.pie-form {
+  font-size: 90%;
+  text-align: center;    
+  margin-top: 15px;
+}
+
+.pie-form a {
+  display: block;
+  text-decoration: none;
+  color: #bbe1fa;
+  margin-bottom: 3px;
+}
+
+.pie-form a:hover {
+  color: #0f4c75;
+}
+
+.inferior {
+  margin-top: 10px;
+  font-size: 90%;
+  text-align: center;
+}
+
+.inferior a {
+  display: block;
+  text-decoration: none;
+  color: #bbe1fa;
+  margin-bottom: 3px;
+}
+
+.inferior a:hover {
+  color: #3282b8;
+}
+
+.email{
+  background-color: #ffffff;
+}
+.pass{
+  background-color: #ffffff;
+}
+.name{
+  background-color: #ffffff;
+}
+
+.my-button {
+  padding: 10px 20px;
+  background-color: #ffd174;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.my-button:hover {
+  background-color: #ffbb00;
+}
+
+.my-button:active {
+  background-color: #fdf595;
 }

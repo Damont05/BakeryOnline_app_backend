@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import { usersModel } from '../dao/models/users.model.js';
-import crypto from 'crypto'
-import sessions from 'express-session'
+//import crypto from 'crypto'
+//import sessions from 'express-session'
+import { creaHash, validPass } from '../utils.js';
 
 export const router=Router()
 
@@ -12,12 +13,14 @@ router.post('/', async(req, res)=>{
         return res.redirect('/?error=Complete todos los datos')
     }
     console.log('email: ', email);
-    console.log('password: ', password);
-    password=crypto.createHmac("sha256", "bakery123").update(password).digest("hex")
-    console.log('password2: ', password);
-    let usuario=await usersModel.findOne({email,password})
+
+    let usuario=await usersModel.findOne({email})
     console.log('usuario: ', usuario);
     if(!usuario){
+        return res.redirect(`/?error=credenciales incorrectas`)
+    }
+
+    if(!validPass(usuario,password)){
         return res.redirect(`/?error=credenciales incorrectas`)
     }
     
@@ -46,7 +49,8 @@ router.post('/register',async(req,res)=>{
         return res.redirect(`/register?error=Existen usuarios con email ${email} en la BD`)
     }
     
-    password=crypto.createHmac("sha256", "bakery123").update(password).digest("hex")
+    //password=crypto.createHmac("sha256", "bakery123").update(password).digest("hex")
+    password=creaHash(password)
     console.log('PASSWORD REGISTER CRYPTO1: ',password);
     let usuario
     try {

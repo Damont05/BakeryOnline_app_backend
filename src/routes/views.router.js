@@ -90,7 +90,7 @@ router.get('/register',auth2,(req,res)=>{
     let {error}=req.query
 
     res.setHeader('Content-Type','text/html')
-    res.status(200).render('register', {error})
+    res.status(200).render('register', {error,estilo:"style"})
 })
 
 

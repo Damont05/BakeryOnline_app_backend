@@ -12,7 +12,7 @@
 
 {{>menu}}
 
-<div class="contenedor-formularios">
+{{!-- <div class="contenedor-formularios">
   <h2>Registro usuarios:</h2>
   <hr>
   <form action="/api/sessions/register" method="post">
@@ -27,4 +27,30 @@
       <br>
       <input type="submit" value="Registrar">
   </form>
+</div> --}}
+
+
+
+<div id="contenedor">
+    <div id="central">
+        <div id="login">
+            <div class="titulo">
+                Register
+            </div>
+            <form action="/api/sessions/register" method="post">
+
+                {{#if error}}
+                    <div style="color: red;">{{error}}</div>
+                {{/if}}
+
+                <input type="text" name="name" class="name" placeholder="name">
+                <input type="email" name="email"  class="email" placeholder="email">
+                <input type="password" name="password" class="pass" placeholder="password">
+                <br>
+                <input type="submit" class="my-button" value="Registrar">
+            </form>
+
+        </div>
+      
+    </div>
 </div>

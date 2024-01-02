@@ -1,4 +1,4 @@
-<!--navBar-->
+{{!-- <!--navBar-->
         <div class="nav-container">
             <nav class="navbar">
               <div class="navbar-logo">
@@ -8,21 +8,30 @@
               <a href="/chat">Chat</a>
               <a href="/register">Register</a>
             </nav>
-          </div>
-<h2>Login usuarios:</h2>
-<hr>
-<form action="/api/sessions/" method="post">
+          </div> --}}
+{{>menu}}
+<div class="contenedor-formularios">
+  <h2 class="title-login">Login</h2>
+  <form action="/api/sessions/" method="post">
 
-    {{#if error}}
-        <div style="color: red;">{{error}}</div>
-    {{/if}}
+      {{#if error}}
+          <div style="color: red;">{{error}}</div>
+      {{/if}}
 
-    {{#if mensaje}}
-        <div style="color: green;">{{mensaje}}</div>
-    {{/if}}
-    
-    <input type="email" name="email" placeholder="email">
-    <input type="password" name="password" placeholder="password">
-    <br>
-    <input type="submit" value="Ingresar">
-</form>
+      {{#if mensaje}}
+          <div style="color: green;">{{mensaje}}</div>
+      {{/if}}
+      
+      <input type="email" name="email" placeholder="email">
+      <input type="password" name="password" placeholder="password">
+      <br>
+      <input type="submit" value="Ingresar">
+  </form>
+</div>
+
+
+
+
+   <script src="js/jquery.js"></script>
+   <script src="js/main.js"></script>
+

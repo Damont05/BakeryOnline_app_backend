@@ -1,23 +1,31 @@
 <div class="container">
 
-        <!--navBar-->
+        {{!-- <!--navBar-->
         <div class="nav-container">
             <nav class="navbar">
-              <div class="navbar-logo">
-                <!--abajo el logo-->
+              <div class="navbar-menu">
+                  <a href="/chat">Chat</a>
+                  <a href="/api/sessions/logout">Logout</a>
               </div>
-              <a href="/home">Home</a>
-              <a href="/chat">Chat</a>
-              <a href="/">Login</a>
-              <a href="/register">Register</a>
+              <div class="navbar-logo">
+                <h1 class="getCart" id="getCart">🧺<span id="cantCart" class="cant-cart"></span></h1>
+              </div>
+
             </nav>
-            <h1 class="getCart" id="getCart">🧺<span id="cantCart" class="cant-cart"></span></h1>
-          </div>
-      
+            
+        </div> --}}
+
+        {{>menu}}
           <!--banner-->
           <div class="banner">
-            <div class="banner-container">
+            <div class="alert alert-success" role="alert">
                 
+            </div>
+            <div class="banner-container">
+              <div class="welcome">
+                <p></strong>Bienvenido {{usuario.email}}</strong></p>
+              </div>
+
               <h1>Entreamasados</h1>
               <p>Panaderia online, del horno a tu puerta</p>
             </div>
@@ -57,4 +65,6 @@
 
     <div id="sweetAlert"></div>
 
- <script type="module" src="js/home.js"></script> 
+<script type="module" src="js/home.js"></script> 
+<!--Toastify js-->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>

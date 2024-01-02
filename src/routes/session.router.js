@@ -15,7 +15,7 @@ router.post('/', async(req, res)=>{
     console.log('password: ', password);
     password=crypto.createHmac("sha256", "bakery123").update(password).digest("hex")
     console.log('password2: ', password);
-    let usuario=await usersModel.findOne({email})
+    let usuario=await usersModel.findOne({email,password})
     console.log('usuario: ', usuario);
     if(!usuario){
         return res.redirect(`/?error=credenciales incorrectas`)
@@ -26,7 +26,6 @@ router.post('/', async(req, res)=>{
     }
 
     res.redirect('/home')
-
 })
 
 router.post('/register',async(req,res)=>{
@@ -48,16 +47,21 @@ router.post('/register',async(req,res)=>{
     }
     
     password=crypto.createHmac("sha256", "bakery123").update(password).digest("hex")
+    console.log('PASSWORD REGISTER CRYPTO1: ',password);
     let usuario
     try {
         console.log('name: ',name);
         console.log('email: ',email);
-        console.log('password: ',password);
+        console.log('password resgister 2: ',password);
+
         usuario=await usersModel.create({name, email, password})
+
         console.log('usuario: ',usuario);
-        // res.redirect(`/?mensaje=Usuario ${email} registrado correctamente`)
+
+        res.redirect(`/?mensaje=Usuario ${email} registrado correctamente`)
         
     } catch (error) {
+        console.log(error);
         res.redirect('/register?error=Error inesperado. Reintente en unos minutos')
     }
 

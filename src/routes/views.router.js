@@ -23,6 +23,9 @@ const auth2=(req, res, next)=>{
 }
 
 router.get('/home',auth,async (req,res)=>{
+    
+    let usuario=req.session.usuario
+    
     let pag = 1;
     if(req.query.pag){
         pag=req.query.pag
@@ -38,7 +41,7 @@ router.get('/home',auth,async (req,res)=>{
         res.status(200).render('home', { products:products.docs,totalPages,page,hasNextPage,hasPrevPage,prevPage,nextPage, 
              estilo:"style"})*/
 
-       res.status(200).render('home', {products, estilo:"style"}) 
+       res.status(200).render('home', {products, usuario,estilo:"style", login:true}) 
        
     } catch (error) {
         console.log(error);
@@ -96,5 +99,5 @@ router.get('/',auth2,(req,res)=>{
     let {error, mensaje}=req.query
 
     res.setHeader('Content-Type','text/html')
-    res.status(200).render('login', {error, mensaje})
+    res.status(200).render('login', {error, mensaje, estilo:"style"})
 })

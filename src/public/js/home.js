@@ -28,29 +28,22 @@ const IVA = 0.21;
 showProducts();
 
 async function showProducts() { 
-
+    console.log('----------entro ee el showproducts metodo---------');
     try {
-    //     data.forEach((produc) => {
-    //         const{id,name,price,weight,cant,img} =  produc;
-    //         let divProducts = document.createElement("div");
-    //         divProducts.className = "card";  
-    //         //{code, title, description, price, status, stock, category, thumbnail}
-    //         divProducts.innerHTML =  `
-    //             <img src="${produc.thumbnail}">
-    //             <h3 class="name-product">${produc.title}</h3>
-    //             <h6 class="weight">${produc.description}</h6>
-    //             <hr>
-    //             <div class="price">$${produc.price}</div>
-    //         `; 
-    //         //se agrega el nodo hijo al nodo padre
-    //         content.append(divProducts);
-    //         let btnDiv = document.createElement("div");
-    //         let btnAdd = document.createElement("button");
-    //         btnAdd.innerText = "agregar";
-    //         btnDiv.className = "agregar";
-    //         btnDiv.append(btnAdd);
-    //         divProducts.append(btnDiv);
-    //     })
+      //Agregando alerta con libreria toastify 
+      Toastify({
+        text: `Bienvenido`,
+        duration: 1000,
+        newWindow: true,
+        close: true,
+        gravity: "bottom", 
+        position: "right", 
+        stopOnFocus: true, 
+        style: {
+        background: "#ee9246",
+        color:"#000000"
+        }
+    }).showToast();
         
     } catch (error) {
         console.log("error inicial, al cargar productos o al guardarlos en la canasta de pedidos", error)

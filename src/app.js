@@ -42,7 +42,7 @@ app.use(sessions(
 ))
 
 //Port
-let port = process.env.PORT || 8080;
+let port = process.env.PORT || 8082;
 
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
@@ -104,7 +104,7 @@ const run = async () => {
         //main route carts
         app.use('/api/carts/', routeCarts);
         //chat
-        app.use('/chat', chatRouter(io));
+        app.use('/', chatRouter(io));
 
 	} catch (error) {
         console.log(error);

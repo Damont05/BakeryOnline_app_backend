@@ -15,11 +15,34 @@ body {
     opacity: 0.9;
 }
 div.navbar-logo {
-    width: 40px;
+    width: 60px;
     height:40px;
     display: table;
     display: inline-block;
     vertical-align: middle;
+}
+
+div.navbar-menu {
+  width: 30%;
+  height:60px;
+  margin-top: 20px;
+  margin-left: 20px;
+  display: inline-block;
+
+
+}
+div.navbar-menu a:hover {
+  cursor: pointer;
+  font-size: 20px;
+}
+div.navbar-menu a {
+  color:rgb(214, 204, 174)
+}
+
+.welcome{
+  width: 50%;
+  margin:auto;
+  margin-top: -100px;
 }
 
 div.navbar-logo img {
@@ -635,3 +658,172 @@ a:hover {
   .paginate a {
     color: #575454;
   }
+
+
+
+
+* {
+    padding: 0;
+    margin: 0;
+}
+
+*, *:before, *:after {
+    box-sizing: border-box;
+}
+
+
+
+.contenedor-formularios {
+  background: #fafafa;
+  padding: 30px;
+  max-width: 500px;
+  height: 300px;
+  margin: 40px auto;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px 4px;
+}
+
+.contenedor-tabs {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 40px 0;
+    
+    &:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+  
+    li a {
+        display: block;
+        text-decoration: none;
+        padding: 15px;
+        font-size: 20px;
+        float: left;
+        width: 50%;
+        text-align: center;
+        cursor: pointer;
+        transition: .5s ease;
+        
+    }
+    
+}
+
+.contenido-tab > div:last-child {
+    display: none;
+}
+
+
+h1 {
+    text-align: center;
+    margin: 0 0 40px;
+}
+
+label {
+    position: absolute;
+    transform: translateY(6px);
+    left: 13px;
+    transition: all 0.25s ease;
+    pointer-events: none;
+    font-size: 22px;
+    
+    
+}
+
+label.active {
+    transform: translateY(50px);
+    left: 2px;
+    font-size: 14px;
+    
+    .req {
+        opacity: 0;
+    }
+}
+
+
+input {
+    font-size: 22px;
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 5px 10px;
+    background: none;
+    background-image: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
+    transition: all 0.5s ease;
+    border-radius: 5px;
+    
+}
+
+.contenedor-input {
+    position: relative;
+    margin-bottom: 40px;
+}
+
+.fila-arriba {
+    &:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+
+    div {
+        float: left;
+        width: 48%;
+        margin-right: 4%;
+        
+        &:last-child { 
+            margin: 0;
+        }
+    }
+}
+
+.button {
+    border: 0;
+    outline: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 15px 0;
+    font-size: 2rem;
+    transition: all .5s ease;    
+}
+
+.button-block {
+    display: block;
+    width: 100%;
+}
+
+.forgot {
+    margin-top: -20px;
+    text-align: right;
+    margin-bottom: 20px;
+}
+
+@media screen and (max-width: 500px) {
+    .fila-arriba {
+        div {
+            width: 100%;
+
+            &:last-child {
+                margin-bottom: 40px;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .contenedor-tabs {
+        li a {
+            width: 100%;
+        }
+    }
+}
+
+.title-login{
+  text-align: center;
+  padding: 10px;
+  margin-bottom: 30px;
+}

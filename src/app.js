@@ -22,8 +22,9 @@ import routeCarts from './routes/carts.router.js'
 import routeUsers from './routes/users.router.js'
 import chatRouter from './routes/chat.router.js'
 
-
 import conn from './database.js';
+import passport from 'passport';
+import { initPassport } from './config/config.passport.js';
 
 const app = express();
 
@@ -42,7 +43,7 @@ app.use(sessions(
 ))
 
 //Port
-let port = process.env.PORT || 8082;
+let port = process.env.PORT || 8080;
 
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
@@ -53,6 +54,10 @@ app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(express.static(path.join(__dirname,'/public'))); //static public
 
+//Passport config
+initPassport()
+app.use(passport.initialize())
+app.use(passport.session())
 
 // const io=new Server(server)
 
@@ -82,6 +87,8 @@ app.use(express.static(path.join(__dirname,'/public'))); //static public
 
 
 // Initialize script
+
+
 const run = async () => {
 	try{
 

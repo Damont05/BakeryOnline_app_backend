@@ -10,6 +10,6 @@ const usersSchema = new mongoose.Schema(
         deleted: {
             type:Boolean, default:false
         }
-    }, { timestamps:true}
+    }, { timestamps:true, strict:false}
 )
 export const usersModel = mongoose.model(userCollection,usersSchema)

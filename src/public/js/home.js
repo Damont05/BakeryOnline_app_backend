@@ -41,7 +41,7 @@ async function showProducts() {
         stopOnFocus: true, 
         style: {
         background: "#ee9246",
-        color:"#000000"
+        color:"#000012"
         }
     }).showToast();
         

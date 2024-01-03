@@ -967,12 +967,12 @@ input {
 .pie-form a {
   display: block;
   text-decoration: none;
-  color: #bbe1fa;
+  color: #004572;
   margin-bottom: 3px;
 }
 
 .pie-form a:hover {
-  color: #0f4c75;
+  color: #0099ff;
 }
 
 .inferior {

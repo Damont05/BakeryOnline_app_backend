@@ -12,39 +12,51 @@ export const initPassport=()=>{
         },
         async(req,username, password, done) => {
 
-            let {name, email}=req.body
-            if(!name || !email || !password){
+            let {first_name,last_name, email,age}=req.body
+            if(!first_name || !last_name || !email || !password || !age ){
                 //return res.redirect('/register?error=Complete todos los datos')
                 return done(null, false)
             }
 
+            /*
+            console.log("CONFIG.PASSPORT, register - first_name: ", first_name);
+            console.log("CONFIG.PASSPORT, register - last_name: ", last_name);
+            console.log("CONFIG.PASSPORT, register - email: ", email);
+            console.log("CONFIG.PASSPORT, register - age: ", age);
+            console.log("CONFIG.PASSPORT, register - role: ", role);
+            */
+
             let regMail=/^(([^<>()\[\]\\.,;:\s@”]+(\.[^<>()\[\]\\.,;:\s@”]+)*)|(“.+”))@((\[[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}])|(([a-zA-Z\-0–9]+\.)+[a-zA-Z]{2,}))$/
-            if(!regMail.test(email)){
+            if(!regMail.test(email)){ 
                 //return res.redirect('/register?error=Mail con formato incorrecto...!!!')
                 return done(null, false)
             }
 
             let existe=await usersModel.findOne({email})
-            if(existe){
+            if(existe){                            
                 //return res.redirect(`/register?error=Existen usuarios con email ${email} en la BD`)
                 return done(null, false)
             }
-            
+           
             //password=crypto.createHmac("sha256", "bakery123").update(password).digest("hex")
             password=creaHash(password)
             console.log('PASSWORD REGISTER CRYPTO1: ',password);
+
+           
             let usuario
             try {
 
-                usuario=await usersModel.create({name, email, password})
+                usuario=await usersModel.create({first_name,last_name, email, age, password})
 
                 //res.redirect(`/?mensaje=Usuario ${email} registrado correctamente`)
-
+            
                 return done(null, usuario)
-                
+            
+            
             } catch (error) {
                 //res.redirect('/register?error=Error inesperado. Reintente en unos minutos')
-                return done(null, false)
+                return done(error);
+                //return done(null, false)
             }
         }
     ))

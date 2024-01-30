@@ -17,10 +17,11 @@ import mongoStore from 'connect-mongo'
 
 import { router as sessionRouter } from './routes/session.router.js';
 import { router as viewsRouter } from './routes/views.router.js'
-import routeProducts from './routes/products.router.js'
-import routeCarts from './routes/carts.router.js'
-import routeUsers from './routes/users.router.js'
+import { router as routeProducts } from './routes/products.router.js'
+import { router as routeCarts } from './routes/carts.router.js'
+import { router as routeUsers } from './routes/users.router.js'
 import chatRouter from './routes/chat.router.js'
+
 
 import conn from './database.js';
 import passport from 'passport';

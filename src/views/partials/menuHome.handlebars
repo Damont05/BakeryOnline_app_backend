@@ -1,0 +1,32 @@
+<div class="nav-container">
+    <nav class="navbar">
+        <ul class="menu">
+            {{#if login}}
+                <li>
+                    <a href="/home">Home</a>
+                </li>
+                <li>
+                    <a href="/api/sessions/logout">Logout</a>
+                </li>
+                <li>
+                    <a href="/chat">Chat</a>
+                </li>
+                
+                <div class="divCanasta">
+                    <h1 class="getCart" id="getCart">🧺<span id="cantCart" class="cant-cart"></span></h1>
+
+                </div>
+
+
+            {{else}}
+                <li>
+                    <a href="/">Login</a>
+                </li>
+                <li>
+                    <a href="/register">Register</a>
+                </li>
+
+            {{/if}}
+        </ul>
+    </nav>
+</div>

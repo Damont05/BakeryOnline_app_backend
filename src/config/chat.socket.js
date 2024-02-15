@@ -1,4 +1,4 @@
-import chatManager from '../dao/mongo/ChatManagerDB.js'
+import chatManager from '../dao/manager/ChatManagerDB.js'
 
 const chatSocket = (io) => {
 	io.on('connection', async (socket) => {

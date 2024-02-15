@@ -13,12 +13,12 @@ export const router = Router();
 //******************************************/
 //route get cart (api/carts/)
 //******************************************/
-router.get('/cart', cartsController.getCarts);
+router.get('/', cartsController.getCarts);
 
 //***********************************************/
 //route get cart for id (api/cart/:pid)
 //***********************************************/
-router.get('/id/:cid', cartsController.getCartsById);
+router.get('/:cid', cartsController.getCartsById);
 
 //*************************************/
 //route add Cart (api/carts/)

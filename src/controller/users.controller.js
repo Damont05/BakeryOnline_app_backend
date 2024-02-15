@@ -1,4 +1,5 @@
-import { usersModel } from '../dao/models/users.model.js';
+import { usersModel }   from '../dao/models/users.model.js';
+import { usersService } from '../service/users.service.js';
 import mongoose from 'mongoose';
 import { creaHash, validPass } from '../utils.js'
 
@@ -11,7 +12,7 @@ export class usersController{
 
         let users=[];
         try {
-            users = await usersModel.find( );
+            users = await usersService.getUsers();
         } catch (error) {
             console.log(error.message);
         }
@@ -32,8 +33,9 @@ export class usersController{
         password=creaHash(password)
         console.log('PASSWORD REGISTER: ',password);
 
-        try {
-            let newUser = await  usersModel.create({first_name,last_name, email, age, password})
+        try {    
+            
+            let newUser = await  usersService.create(first_name,last_name, email, age, password)
             res.setHeader('Content-Type','application/json');
             return res.status(200).json({ ok:true, newUser});
         } catch (error) {
@@ -50,9 +52,9 @@ export class usersController{
             res.setHeader('Content-Type','application/json');
             return res.status(400).json({ ok:false, error: `Ingrese un id valido`}); 
         }
-        let existe
+        let existe 
         try {
-            existe = await usersModel.findOne({user:existe, _id:id})
+            existe = await usersService.getUsersById(id)
         } catch (error) {
             res.setHeader('Content-Type','application/json');
             return res.status(500).json({ ok:false, error: 'Error en el servidor'});

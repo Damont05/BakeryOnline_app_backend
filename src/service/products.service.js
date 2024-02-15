@@ -1,4 +1,4 @@
-import { ProductManagerDB as DAO} from "../dao/mongo/ProductManagerDB.js"
+import { ProductManagerDB as DAO} from "../dao/manager/ProductManagerDB.js"
 const pm =  new DAO;
 
 class ProductService{
@@ -16,6 +16,9 @@ class ProductService{
         return await pm.f_addProduct(newProduct);
     }
 
+    async deleteProduct(id){
+        return await pm.f_deleteProduct(id)
+    }
 
 }
 

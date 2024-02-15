@@ -57,3 +57,10 @@ router.get('/errGithub', (req,res)=>{
     res.setHeader('Content-Type','application/json');
     return  res.status(400).json({ ok:false, error: 'Error Autenticate GitHub'});
 });
+
+
+router.get('/current', (req,res) =>{
+    
+    res.setHeader('Content-Type','application/json');
+    return  res.status(200).json({ ok:false, error: 'Error Autenticate GitHub'});
+});

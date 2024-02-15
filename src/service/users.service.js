@@ -1,23 +1,23 @@
-import { UsuariosMongoDAO as DAO} from "../dao/usuariosMongoDAO.js"
+//import { UsuariosMongoDAO as DAO} from "../dao/usuariosMongoDAO.js"
+import { DAO } from "../dao/factory.js";
 
-class UsuariosService{
+class UsersService{
+    
     constructor(dao){
-        this.dao=new dao()
+        this.dao=new dao();
+    }
+    async getUsers(){
+        return await this.dao.get();
     }
 
-    async getUsuarios(){
-        return await this.dao.get()
+    async getUsersById(id){
+        return await this.dao.getById(id)
     }
 
-    async getUsuarioByEmail(email){
-        return await this.dao.getBy(email)
+    async create(first_name,last_name, email, age, password){
+        return await this.dao.create({first_name,last_name, email, age, password})
     }
-
-    async createUsuario(usuario){
-        return await this.dao.create(usuario)
-    }
-
 
 }
 
-export const usuariosService=new UsuariosService(DAO)
+export const usersService=new UsersService(DAO);

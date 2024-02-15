@@ -23,7 +23,7 @@ import { router as routeUsers } from './routes/users.router.js'
 import chatRouter from './routes/chat.router.js'
 
 
-import conn from './database.js';
+//import conn from './database.js';
 import passport from 'passport';
 import { initPassport } from './config/config.passport.js';
 
@@ -44,7 +44,7 @@ app.use(sessions(
 ))
 
 //Port
-let port = process.env.PORT || 8080;
+const PORT = 8080;
 
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
@@ -94,8 +94,8 @@ const run = async () => {
 	try{
 
 		//Server
-        const server =  app.listen(port, () =>{
-            console.log(`Server on port ${port}`);
+        const server =  app.listen(PORT, () =>{
+            console.log(`Server on port ${PORT}`);
         });
 
 		// Websocket Server Up
@@ -110,7 +110,7 @@ const run = async () => {
         //main route products
         app.use('/api/users/', routeUsers);
         //main route carts
-        app.use('/api/carts/', routeCarts);
+        app.use('/api/cart/', routeCarts);
         //chat
         app.use('/', chatRouter(io));
 

@@ -1,4 +1,6 @@
-import { CartManagerDB } from '../dao/mongo/CartsManagerDB.js';
+import { CartManagerDB } from '../dao/manager/CartsManagerDB.js';
+import { cartsService } from '../service/carts.service.js';
+
 import mongoose from 'mongoose';
 
 //instantiated class DB Cart
@@ -9,7 +11,7 @@ export class cartsController{
     static async getCarts(req,res){
 
         try {
-            let carts =  await cm.f_getCart();
+            let carts =  await cartsService.getCarts();
             res.setHeader('Content-Type','application/json');
     
             if(req.query.limit){
@@ -32,7 +34,7 @@ export class cartsController{
                 return  res.status(400).json({ ok:false, error: 'ID Cart is not valid'});
             }
     
-            const cart =  await cm.f_getCartById(cid);
+            const cart =  await cartsService.getCartById(cid);
            
             if(cart == undefined){
                 res.setHeader('Content-Type','application/json');
@@ -48,7 +50,7 @@ export class cartsController{
 
     static async createCart(req,res){
         try {
-            const newCart = await cm.f_addCart();
+            const newCart = await cartsService.createCart();
             if(newCart){
                 res.setHeader('Content-Type', 'application/json');
                 return res.status(201).json({ok:'true', message: "Cart created successfully", newCart})
@@ -70,7 +72,7 @@ export class cartsController{
             const productId = req.params.pid
             const productQuantity = req.body.quantity
     
-            const data = await cm.addProductToCart(cartId, productId, productQuantity)
+            const data = await cartsService.createProdCart(cartId, productId, productQuantity); 
     
             res.status(201).send({ status: 'Success', payload: data })
         } catch (error) {

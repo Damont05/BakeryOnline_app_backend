@@ -18,14 +18,6 @@ export const initPassport=()=>{
                 return done(null, false)
             }
 
-            /*
-            console.log("CONFIG.PASSPORT, register - first_name: ", first_name);
-            console.log("CONFIG.PASSPORT, register - last_name: ", last_name);
-            console.log("CONFIG.PASSPORT, register - email: ", email);
-            console.log("CONFIG.PASSPORT, register - age: ", age);
-            console.log("CONFIG.PASSPORT, register - role: ", role);
-            */
-
             let regMail=/^(([^<>()\[\]\\.,;:\s@”]+(\.[^<>()\[\]\\.,;:\s@”]+)*)|(“.+”))@((\[[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}])|(([a-zA-Z\-0–9]+\.)+[a-zA-Z]{2,}))$/
             if(!regMail.test(email)){ 
                 //return res.redirect('/register?error=Mail con formato incorrecto...!!!')

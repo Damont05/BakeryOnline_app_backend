@@ -42,7 +42,7 @@ export class ProductManagerDB {
 		}
 		
 		try {
-			const products = await productsModel.paginate(formatQuery, {page: formatPage, limit: formatLimit, sort: { price: formatSort }, lean: true})
+			//const products = await productsMongoDAO.get();
 
 			products.prevLink = products.hasPrevPage ? `?page=${products.prevPage}` : ''
 			products.nextLink = products.hasNextPage ? `?page=${products.nextPage}` : ''
@@ -100,7 +100,7 @@ export class ProductManagerDB {
     //Get products
     async f_getProducts (){
         try {
-            const result = await productsModel.find({});
+            const result =   await productsModel.find().lean();
             return result;
             
         } catch (error) {

@@ -1,6 +1,6 @@
 import { productsModel } from '../dao/models/products.model.js';
 import mongoose from 'mongoose';
-import {ProductManagerDB} from '../dao/mongo/ProductManagerDB.js'
+import {ProductManagerDB} from '../dao/manager/ProductManagerDB.js'
 const pm =  new ProductManagerDB;
 
 import { productService } from "../service/products.service.js"
@@ -153,7 +153,8 @@ export class productsController{
     
             let result
             try {
-                result=await productsModel.deleteOne({_id:pid},req.body)
+                //result=await productsModel.deleteOne({_id:pid},req.body)
+                result=await productService.deleteProduct(pid);
                 console.log(result);
                 if(result.deletedCount>0){
                     res.setHeader('Content-Type','application/json');

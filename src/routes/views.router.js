@@ -1,8 +1,10 @@
 import { Router } from 'express';
-import {productsModel} from '../dao/models/products.model.js'
 import {cartModel} from '../dao/models/carts.model.js'
 
 import {usersModel} from '../dao/models/users.model.js'
+
+import { productService } from "../service/products.service.js"
+
 
 export const router=Router()
 
@@ -30,18 +32,11 @@ router.get('/home',auth,async (req,res)=>{
     if(req.query.pag){
         pag=req.query.pag
     }
-  
     
     let products
     try {
-        products =  await productsModel.find().lean();
-        /*products = await productsModel.paginate({},{lean:true,limit:6, page:pag })
-        console.log(products);
-        let {totalPages,page,hasNextPage,hasPrevPage,prevPage,nextPage} = products
-        res.status(200).render('home', { products:products.docs,totalPages,page,hasNextPage,hasPrevPage,prevPage,nextPage, 
-             estilo:"style"})*/
-
-       res.status(200).render('home', {products, usuario,estilo:"style", login:true}) 
+        products =  await productService.getProducts();
+        res.status(200).render('home', {products, usuario,estilo:"style", login:true}) 
        
     } catch (error) {
         console.log(error);

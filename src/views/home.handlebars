@@ -1,20 +1,5 @@
 <div class="container">
 
-        {{!-- <!--navBar-->
-        <div class="nav-container">
-            <nav class="navbar">
-              <div class="navbar-menu">
-                  <a href="/chat">Chat</a>
-                  <a href="/api/sessions/logout">Logout</a>
-              </div>
-              <div class="navbar-logo">
-                <h1 class="getCart" id="getCart">🧺<span id="cantCart" class="cant-cart"></span></h1>
-              </div>
-
-            </nav>
-            
-        </div> --}}
-
         {{>menuHome}}
           <!--banner-->
           <div class="banner">
@@ -40,7 +25,7 @@
                       <hr>
                       <div class="price">${{this.price}}.0</div>
                       <div class="agregar">
-                          <button>Agregar</button>
+                          <button onclick="addCart('{{this._id}}')">Agregar</button>
                       </div>
                   </div>
             {{/each}}
@@ -66,5 +51,6 @@
     <div id="sweetAlert"></div>
 
 <script type="module" src="js/home.js"></script> 
+<script src="js/products.js"></script> 
 <!--Toastify js-->
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>

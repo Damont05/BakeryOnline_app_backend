@@ -1,6 +1,5 @@
 import mongoose from 'mongoose'
 import { config } from '../config/config.js';
-console.log("entrando al fractory")
 const persistenc=config.generals.PERSISTENCE
 export let DAO
 

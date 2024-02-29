@@ -16,9 +16,12 @@ const usersSchema = new mongoose.Schema(
             type:String, 
             default:'user'
         },
-        deleted: {
-            type:Boolean, default:false
-        }
-    }, { timestamps:true, strict:false}
+    }, 
+    {
+        timestamps: {
+            updatedAt: "FechaUltMod", createdAt: "FechaAlta"
+        },
+        strict:false
+    }
 )
 export const usersModel = mongoose.model(userCollection,usersSchema)

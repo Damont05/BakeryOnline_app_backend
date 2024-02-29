@@ -21,7 +21,14 @@ export class CartManagerDB{
     async f_addCart(){
 
         try { 
-            const newCart = await cartModel.create({ products: [] });
+            // const newCart = await cartModel.create({ products: [] });
+            
+            // return newCart;
+
+            const newCart = new CartModel({ id: id, products: [], user: user });
+
+            await newCart.save();
+      
             return newCart;
 
         } catch (error) {

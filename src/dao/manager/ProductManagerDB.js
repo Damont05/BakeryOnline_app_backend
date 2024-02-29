@@ -9,6 +9,7 @@
 //***************************************************************************/
 
 //Required
+import e from 'express';
 import { productsModel } from '../models/products.model.js';
 import mongoose from 'mongoose';
 
@@ -124,14 +125,16 @@ export class ProductManagerDB {
         }
     }
 
-    //Update products
-    async f_updateProduct(products){
+    //Update product
+    async f_updateProduct(id,updatedFields){
         try {
+            
+            return  productsModel.updateOne(
+                { id: id },
+                { $set: updatedFields });
 
-            await fs.promises.writeFile(this.path, JSON.stringify(products,null,5))
-           
-        } catch (error) {
-            console.error("ERROR: f_updateProduct() - ID Product not found!");
+        } catch (e) {
+            console.error("ERROR: f_updateProduct(): " + e);
             return;
         }
     }
@@ -140,19 +143,9 @@ export class ProductManagerDB {
     async f_deleteProduct(id){
 
         try {
-            let products = await this.f_getProducts(this.path);
-            const index = products.findIndex(product => product.id === id);
-    
-            if (index !== -1){
-                let newProduct = [...products.slice(0, index), ...products.slice(index + 1)];
-                await fs.promises.writeFile(this.path, JSON.stringify(newProduct,null,5))
-                console.log("Product removed!");
-
-            }else{
-                throw new Error();
-            }
-        } catch (error) {
-            console.error("ERROR: f_deleteProduct() - ID Product not found!");
+            return productsModel.deleteOne({ id: id });
+        } catch (e) {
+            console.error("ERROR: f_deleteProduct(): " + e);
             return;
         }
     }

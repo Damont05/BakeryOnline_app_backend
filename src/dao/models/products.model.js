@@ -10,12 +10,22 @@ const productsSchema = new mongoose.Schema(
         description:    { type:String, require:false },
         price:          { type:Number, require:true },
         status:         { type:Boolean,require:false },
-        stock:          { type:Number, require:false },
-        category:       { type:String, require:false },
+        stock:          { type:Number, require:true },
+        category:       { type:String, require:true },
         thumbnail:      { type:String, require:true },
-    }, {timestamps:true}
+        id: {
+            type: Number,
+            required: false,
+            unique: true
+        },
+    }, 
+    {
+        timestamps:true,strict:false
+    }
 )
 
 productsSchema.plugin(paginate);
 
 export const productsModel = mongoose.model(productsCollection,productsSchema)
+
+

@@ -1,175 +1,267 @@
-import { productsModel } from '../dao/models/products.model.js';
-import mongoose from 'mongoose';
-import {ProductManagerDB} from '../dao/manager/ProductManagerDB.js'
-const pm =  new ProductManagerDB;
+import { ProductManager } from "../service/products.service.js";
+import { CartManager } from "../service/carts.service.js";
+import { usersModel } from "../dao/models/users.model.js";
+import { CustomError , trataError} from '../utils/CustomErrors.js';
+import { ERRORES_INTERNOS, STATUS_CODES } from '../utils/tiposError.js';
+import { errorArgumentos, errorArgumentosDel } from '../utils/errors.js';
 
-import { productService } from "../service/products.service.js"
+const cartManager = new CartManager()
+const productManager = new ProductManager();
 
-export class productsController{
+export class productsController {
+  constructor() {}
 
-    static async getProducts(req,res){
+  static async getCart(req, res) {
+    try {
 
-        try {
-            let products =  await productService.getProducts()
-            res.setHeader('Content-Type','application/json');
-            res.status(200).json({ok:true , products})
-            
-        } catch (error) {
-            console.log('Error: Controller - getProducts: ' + error);
-        }
-
-    }
-
-    static async getProductsById(req,res){
-        try {
-            let { pid }  = req.params;
-           
-            if(!mongoose.Types.ObjectId.isValid(pid)){
-                res.setHeader('Content-Type','application/json');
-                return  res.status(400).json({ ok:false, error: 'ID Product is not valid'});
-            }
-            const product =  await productService.getProductById(pid);
-           
-            if(product == undefined){
-                res.setHeader('Content-Type','application/json');
-                return res.status(404).json({ ok:false, error: 'ID Product not found'});
-            }
-            res.setHeader('Content-Type','application/json');
-            return res.status(200).json({ ok:true, product });
       
-        } catch (error) {
-            console.log('Error: GET:ID: ' + error);
-        }
+      let userCar = req.user._id;
+      const newCart = await cartManager.createCart(userCar);
+      req.logger.info(`carrito nuevo ${newCart}`)
+
+      let updateUsuario = await usersModel.findOne({
+        email: req.session.user.email,
+      });
+
+      updateUsuario.car =  await newCart._id;
+      await updateUsuario.save();
+ 
+      
+      updateUsuario = await usersModel.findOne({ email: req.session.user.email }).lean()
+
+      let usuario = updateUsuario; 
+      let rol = updateUsuario.rol;
+      let auto = false
+      let autoUser= false; 
+
+     
+      req.logger.info(`usuario en sesion es ${updateUsuario}`)
+      let pagina = 1;
+      if (req.query.pagina) {
+        pagina = req.query.pagina;
+      }
+
+      let limite = null;
+      if (req.query.limit) {
+        limite = req.query.limit;
+      }
+
+      let resultado;
+      let preresultado = await productManager.listarProductos(pagina, limite);
+      let categoria = req.query.categoria
+        ? req.query.categoria.toLowerCase()
+        : null;
+
+      if (req.query.categoria) {
+        req.logger.info(`entrando a categoria`)
+        preresultado = await productManager.listarProductos(
+          pagina,
+          limite,
+          undefined,
+          categoria
+        );
+      }
+
+      if (req.query.sort) {
+        req.logger.info(`entrando al sort`)
+        let sortOrder = req.query.sort === "desc" ? -1 : 1;
+        preresultado = await productManager.listarProductos(
+          pagina,
+          limite,
+          sortOrder,
+          categoria
+        );
+      }
+
+      resultado = preresultado.docs;
+
+      let { totalPages, hasNextPage, hasPrevPage, prevPage, nextPage } =
+        preresultado;
+
+      if (rol === "admin") {
+        auto = true;
+      }
+
+      if (rol === "user") {
+       autoUser = true;
+      }
+
+     
+
+      res.status(200).render("products", {
+        resultado: resultado,
+        totalPages,
+        hasNextPage,
+        hasPrevPage,
+        prevPage,
+        nextPage,
+        user,
+        auto,
+        autoUser
+      });
+    } catch (e) {
+      // Manejar errores aquí
+      console.log(e)
+      res.status(500).send("Error interno del servidor");
     }
+  }
 
-    static async createProduct(req,res){
-        try {
-
-            let {code, title, description, price, status, stock, category, thumbnail} = req.body;
-    
-            if(!code||!title||!description||!price||!status||!stock||!category){
-                res .setHeader('Content-Type', 'application/json');
-                return res.status(400).json({ ok:false, error: `fields are required` })
-            }
-            
-            console.log('code: ',code);
-            let products =  await productService.getProducts()
-            //console.log('products: ',products);
-            //console.log('products: ',typeof(products));
-            let encontrado;
-            for(let k in products) {
-                if(products[k].code == code){
-                    console.log('existe');
-                    encontrado = true;
-                }
-            }
-            if (encontrado){
-                 res.setHeader('Content-Type', 'application/json');
-                 return res.status(400).json({ ok:false, error: `El codigo de producto ' ${code} ' ya existe en BD` })
-            }
-    
-            let newProduct =  {code, title, description, price, status, stock, category, thumbnail}
-            //await pm.f_addProduct(newProduct);
-            await productService.createProduct(newProduct)
-            //io.emit("newProduct",newProduct)
-    
-            res.setHeader('Content-Type', 'application/json');
-            return res.status(201).json({ ok:true, message:'Product created' , newProduct });
-            
-        } catch (error) {
-            console.log('Error: POST: ' + error);
-        }
+  static async crud(req, res) {
+    try {
+      res.status(200).render("CRUDproducts");
+    } catch (e) {
+      // Manejar errores aquí
+      req.logger.error(e)
+      res.status(500).send("Error interno del servidor");
     }
+  }
 
-    static async updateProduct(req,res){
-        try {
-        
-            let {id} = req.params;
-    
-            if(!mongoose.Types.ObjectId.isValid(id)){
-                res.setHeader('Content-Type','application/json');
-                return  res.status(400).json({ ok:false, error: 'ID Product is not valid'});
-            }
-            let existe
-            try {
-                existe=await productsModel.findOne({_id:id}) 
-            } catch (error) {
-                res.setHeader('Content-Type','application/json');
-                return res.status(500).json({error:`Error server - try again later`, detalle: error.message})
-            }
-    
-            if(!existe){
-                res.setHeader('Content-Type','application/json');
-                return res.status(400).json({error:`ID Product: ${id} not found`})
-            }
-    
-            if(req.body._id || req.body.code){
-                res.setHeader('Content-Type','application/json');
-                return res.status(400).json({ok:false, error:`Cannot modify properties "_id" and "code"`})
-            }
-    
-            let result
-            try {
-                result=await productsModel.updateOne({_id:id},req.body)
-                if(result.modifiedCount >0){
-                    res.setHeader('Content-Type','application/json');
-                    return res.status(200).json({ok:true, payload:"Modified product"});
-                }else{
-                    res.setHeader('Content-Type','application/json');
-                    return res.status(400).json({ok:false, error:`Modification error`})
-                }
-            } catch (error) {
-                res.setHeader('Content-Type','application/json');
-                return res.status(500).json({error:`Error server - try again later`, detalle: error.message})
-        
-            }
-        } catch (error) {
-            console.log('Error: PUT: ' + error);         
-        }
 
+ static async getOneProduct (req, res){
+    let id = req.params.pid;
+    let idprod = parseInt(id);
+  
+    if (isNaN(idprod)) {
+      return res.send("Error, ingrese un argumento id numerico");
     }
+  
+   
+  
+    let resultado = await productManager.listarProductosId(idprod);
+  
+    res.status(200).render("products", {
+      resultado,
+    });
+  }
 
-    static async deleteProduct(req,res){
-        try {
+  static async postProduct(req, res){
+    try {
 
-            let {pid} = req.params;
+    const profile= req.session.user.rol
+      
+  
+    let  { title, description, code, price, stock, category, thumbnail ,owner} =
+      req.body;
+
+      
+  
+       if (!title || !description || !code || !price || !stock || !category) {
+     
+        throw new CustomError("Complete campos", "Falta completar los campos requeridos", STATUS_CODES.ERROR_ARGUMENTOS, ERRORES_INTERNOS.ARGUMENTOS, errorArgumentos());
+    }   
+   
+    if (owner === null || owner === '') {
+      owner = 'admin';
+  }
+  
+  console.log('owner',owner)
     
-            if(!mongoose.Types.ObjectId.isValid(pid)){
-                res.setHeader('Content-Type','application/json');
-                return  res.status(400).json({ ok:false, error: 'ID Product is not valid'});
-            }
-            let existe
-            try {
-                existe=await productsModel.findOne({_id:pid}) 
-            } catch (error) {
-                res.setHeader('Content-Type','application/json');
-                return res.status(500).json({error:`Error server - try again later`, detalle: error.message})
-            }
-    
-            if(!existe){
-                res.setHeader('Content-Type','application/json');
-                return res.status(400).json({error:`ID Product: ${pid} not found`})
-            }
-    
-            let result
-            try {
-                //result=await productsModel.deleteOne({_id:pid},req.body)
-                result=await productService.deleteProduct(pid);
-                console.log(result);
-                if(result.deletedCount>0){
-                    res.setHeader('Content-Type','application/json');
-                    return res.status(200).json({ok:true, payload:"Deleted product"});
-                }else{
-                    res.setHeader('Content-Type','application/json');
-                    return res.status(400).json({ok:false, error:`Deleted error`})
-                }
-            } catch (error) {
-                res.setHeader('Content-Type','application/json');
-                return res.status(500).json({error:`Error server - try again later`, detalle: error.message})
-        
-            }
-        } catch (error) {
-            console.log('Error: DELETE: ' + error);   
-        }
+      const savedProduct = await productManager.addProduct({title, description, code, price, stock, category, thumbnail ,owner});
+      res
+        .status(201)
+        .json({ message: "Producto agregado con éxito", product: savedProduct });
+    } catch (error) {
+       res.status(500).json({ error: error });  
+     console.log(error)
     }
+    
+  }
+
+ static  async actProduct(req, res){
+    
+  
+    const {
+      id,
+      title,
+      description,
+      code,
+      price,
+      stock,
+      category,
+      estado=true,
+      thumbnail,
+    } = req.body;
+
+    
+  
+    if (
+      !id ||
+      !title ||
+      !description ||
+      !code ||
+      !price ||
+      !stock ||
+      !category ||
+      estado === undefined
+    ) {
+      res.status(400).send("Complete todos los campos");
+      
+      req.logger.info("No se completo las propiedades necesarias")
+    }else {
+
+    
+      try {
+   
+      // Crea un objeto con los campos que deseas actualizar
+      const updateFields = {
+        title,
+        description,
+        code,
+        price,
+        stock,
+        category,
+        estado,
+        thumbnail,
+      };
+  
+      // Utiliza el método updateProductById del manager para actualizar el producto por ID
+      const success = await productManager.updateProductById(
+        id,
+        updateFields
+      );
+  
+      if (success) {
+        res.status(200).json({ message: "Producto actualizado con éxito" });
+      } else {
+        res.status(404).json({ error: "Producto no encontrado" });
+      }
+    } catch (error) {
+      req.logger.error(error)
+      res.status(500).json({ error: "Error al actualizar el producto" });
+    }
+  }
+   
+  }
+
+  static async deleteProd(req, res){
+    let {id} = req.body;
+    let idprod = parseInt(id);
+    
+    const productToDelete = await productManager.listarProductosId(idprod);
+    const owner = productToDelete.owner;
+
+    console.log(productToDelete,owner)
+
+    try {
+    if (isNaN(idprod)) {
+      throw new CustomError("Complete campos", "Ingrese un id numerico", STATUS_CODES.ERROR_ARGUMENTOS, ERRORES_INTERNOS.ARGUMENTOS, errorArgumentosDel(req.params));
+    }
+  
+   
+  
+  
+      // Utiliza el método deleteProductById del manager para eliminar el producto por ID
+      const success = await productManager.deleteProductById(idprod);
+  
+      if (success) {
+        res.status(200).json({ message: "Producto eliminado con éxito" });
+      } else {
+        res.status(404).json({ error: "Producto no encontrado" });
+      }
+    } catch (error) {
+      /* req.logger.error(error);
+      res.status(500).json({ error: "Error al eliminar el producto" }); */
+      trataError(error, res) 
+    }
+  }
 }

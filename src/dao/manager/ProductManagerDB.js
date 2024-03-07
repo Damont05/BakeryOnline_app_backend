@@ -21,7 +21,6 @@ export class ProductManagerDB {
     }
 
     getProducts = async (limit, page, sort, query) => {
-        console.log('DATOOOOS', limit);
 		let formatLimit = limit ? parseInt(limit) : 9
 		let formatPage = page ? parseInt(page) : 1
 		

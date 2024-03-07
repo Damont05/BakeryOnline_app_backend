@@ -6,13 +6,15 @@ dotenv.config({
 })
 
  export const config={
-    generals:{
-        PORT:process.env.PORT||3000,
-        PERSISTENCE:process.env.PERSISTENCE||"FS"
-    },
-    database:{
+
         MONGO_URL:process.env.MONGO_URL,
-        DBNAME:process.env.DBNAME
-    }
+        SECRETKEY:process.env.SECRETKEY,
+        DBNAME:process.env.DBNAME,
+        CLIENT_ID:process.env.CLIENT_ID,
+        CLIENT_SECRET:process.env.CLIENTSECRET,
+        CALLBACK_URL:process.env.CALLBACK_URL,
+        PORT:process.env.PORT||3000,
+        PERSISTENCE:process.env.PERSISTENCE||"FS",
+        MODE:process.env.MODE||"production",
  }
 

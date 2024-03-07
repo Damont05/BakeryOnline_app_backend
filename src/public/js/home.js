@@ -6,10 +6,6 @@
 //********************************************************
 
 console.log('ENTRO AL home.JS');
-
-// //Required
-//import  productsModel  from '/src/dao/models/products.model.js';
-
  
 //Se almacena(getlocalstorage) el localstorage para trabajar siempre con los mismos datos 
 let listOrder = JSON.parse(localStorage.getItem("listOrder")) || [];
@@ -23,10 +19,32 @@ const containerPay = document.getElementById("container-pay");
 const cantCart  =document.getElementById("cantCart");
 //IVA
 const IVA = 0.21;
+const addProductCart = document.querySelectorAll('addCart');
 
-//Cargando productos del json y mostrando en la vista
+
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    console.log("ENTRO EN ELÑ EVENTLISTENER");
+
+    var carUsuario= "{{user.first_name}}";
+    console.log("CARUAURIOOO: ",carUsuario)
+})
+
+
+//contador de productos de la canasta
+const cartCount=()=>{
+    cantCart.style.display = "block";
+    const carritoLength = listOrder.length;
+    localStorage.setItem("carritoLength", JSON.stringify(carritoLength));
+    cantCart.innerText = JSON.parse(localStorage.getItem("carritoLength"));
+};
+cartCount();
+
+
+
+
 showProducts();
-
 async function showProducts() { 
     console.log('----------entro ee el showproducts metodo---------');
     try {
@@ -49,6 +67,8 @@ async function showProducts() {
         console.log("error inicial, al cargar productos o al guardarlos en la canasta de pedidos", error)
     }
 }
+
+
 
 //Obtener IVA
 function getIVA(total,IVA){

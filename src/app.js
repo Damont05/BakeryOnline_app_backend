@@ -7,48 +7,67 @@
 
 
 //imports
-import __dirname from './utils.js';
-import path from 'path';
+//
+import {dirname} from 'path';
+//import __dirname  from './utils/utils.js';
+
+import { fileURLToPath } from "url";
+import path from "path";
 import express from 'express';
 import { engine } from 'express-handlebars';
 import { Server } from 'socket.io'
+import { MessageModel } from "./dao/models/messages.model.js";
 import sessions from 'express-session'
 import mongoStore from 'connect-mongo'
-
-import { router as sessionRouter } from './routes/session.router.js';
-import { router as viewsRouter } from './routes/views.router.js'
-import { router as routeProducts } from './routes/products.router.js'
-import { router as routeCarts } from './routes/carts.router.js'
-import { router as routeUsers } from './routes/users.router.js'
-import chatRouter from './routes/chat.router.js'
-
-
-//import conn from './database.js';
-import passport from 'passport';
 import { initPassport } from './config/config.passport.js';
+import passport from 'passport';
+import { config } from './config/config.js';
+import { authUser } from "./utils/utils.js";
+import { errorHandler } from './middlewares/errorHandler.js';
+import { middLogg } from "./utils/loggers.js";
+import { logger } from "./utils/loggers.js";
+//
+//imports Router
+//
+import routeProducts from './routes/products.router.js';
+import routeCarts from './routes/carts.router.js';
+import realTimeProducts from "./routes/liveRouter.js";
+import { router as viewsRouter } from './routes/views.router.js';
+import { router as sessionRouter } from './routes/session.router.js';
+import { router as mockingRouter } from "./routes/mocking.router.js";
+import { router as loggerTest } from "./routes/loggerTets.router.js";
+import { router as recovery } from "./routes/recovery.router.js";
+import { router as routeUsers } from './routes/users.router.js';
+import chatRouter from './routes/chat.router.js';
+//
 
 const app = express();
 
-app.use(sessions(
-    {
-        secret:"codercoder123",
-        resave: true, saveUninitialized: true,
-        store: mongoStore.create(
-            {
-                mongoUrl:'mongodb+srv://user_coder:Coder123@cluster0.tcbhngn.mongodb.net/?retryWrites=true&w=majority',
-                mongoOptions:{dbName : 'ecommerce'},
-                ttl:3600
-            }
-        )
-    }
-))
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 //Port
 const PORT = 8080;
 
+//mid session
+app.use(sessions(
+    {
+        secret:config.SECRETKEY,
+        resave: true, saveUninitialized: true,
+        store: mongoStore.create(
+            {
+                mongoUrl:config.MONGO_URL,
+                mongoOptions:{dbName:config.DBNAME},
+                ttl:3600
+            }
+        )
+    }
+));
+
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname,'/views'));
+
 
 //Middlewares
 app.use(express.json());
@@ -60,63 +79,85 @@ initPassport()
 app.use(passport.initialize())
 app.use(passport.session())
 
-// const io=new Server(server)
+app.use(middLogg)
+app.get("/chat",authUser, (req, res) => {
+  res.status(200).render("chat");
+});
 
-// let usuarios=[]
-// let mensajes=[]
-// //server socket
-// io.on("connection",socket=>{
-//     socket.on('id',nombre=>{
+//Main Routes
+//
+//main route carts
+app.use('/api/cart', routeCarts);
+//main route views
+app.use('/', viewsRouter);
+//main route sessions
+app.use('/api/sessions', sessionRouter);
+//main route mocking
+app.use('/mockingProducts', mockingRouter);
 
-//         usuarios.push({nombre, id:socket.id})
-//         socket.broadcast.emit('nuevoUsuario',nombre)
-//         socket.emit("hello",mensajes)
-//     })
+app.use('/loggerTest',loggerTest);
+app.use('/api/recovery', recovery);
+//main route products
+app.use('/api', routeProducts);
+//main route users
+app.use('/api/users', routeUsers);
 
-//     socket.on('message', async (message) => {
-//         const createdMessage = await chatManager.createMessage(message.user, message.message)
+app.use(
+"/live",
+(req, res, next) => {
+    req.io = io;
+    next();
+},
+realTimeProducts
+);
+
+app.use(errorHandler) 
+
+//Server
+const server =  app.listen(PORT, () => {
+    logger.info(`Server on port ${PORT}`);
+});
+
+
+const io=new Server(server)
+
+let users=[]
+let messages=[]
+
+//server socket
+io.on("connection", (socket) => {
+    logger.info(`Se ha conectado un cliente con id ${socket.id}`);
+
+    socket.on('id', async(nombre) => {
+        users.push({nombre, id:socket.id})
+        socket.broadcast.emit('newUser',nombre)
     
-//     })
-//     socket.on("disconnect",()=>{
-//         let usuario=usuarios.find(u=>u.id===socket.id)
-//         if(usuario){
-//             io.emit("usuarioDesconectado", usuario.nombre)
-//         }
-//     })
+        try {
+            const mensajes = await MessageModel.find({}).lean();
+            socket.emit("hello", mensajes);
+        } catch (error) {
+            console.error("Error al obtener mensajes de la base de datos:", error);
+        }
+    });
 
-// })
-
-
-// Initialize script
-
-
-const run = async () => {
-	try{
-
-		//Server
-        const server =  app.listen(PORT, () =>{
-            console.log(`Server on port ${PORT}`);
+    socket.on("mensaje", async (datos) => {
+        const nuevoMensaje = new MessageModel({
+        messages: [{ user: datos.emisor, message: datos.mensaje }],
         });
 
-		// Websocket Server Up
-		const io = new Server(server)
+        try {
+            const mensajeGuardado = await nuevoMensaje.save();
+            logger.info("Mensaje guardado en la base de datos:", mensajeGuardado);
+            io.emit("nuevoMensaje", datos);
+        } catch (error) {
+            console.error("Error al guardar el mensaje en la base de datos:", error);
+        }
+    });
 
-		//Routes
-        //route views
-        app.use('/api/sessions', sessionRouter)
-        app.use('/', viewsRouter);
-        //main route products
-        app.use('/api/products/', routeProducts);
-        //main route products
-        app.use('/api/users/', routeUsers);
-        //main route carts
-        app.use('/api/cart/', routeCarts);
-        //chat
-        app.use('/', chatRouter(io));
-
-	} catch (error) {
-        console.log(error);
-	}
-}
-
-run()
+    socket.on("disconnect", () => {
+        let user = user.find((u) => u.id === socket.id);
+        if (user) {
+          io.emit("usuarioDesconectado", user.nombre);
+        }
+      });
+});

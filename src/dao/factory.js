@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 import { config } from '../config/config.js';
-const persistenc=config.generals.PERSISTENCE
+import { logger } from "../utils/loggers.js";
+const persistenc=config.PERSISTENCE
 export let DAO
 
 switch (persistenc) {
@@ -11,10 +12,10 @@ switch (persistenc) {
 
     case "MONGO":
         try {
-            await mongoose.connect(config.database.MONGO_URL, {
-                dbName: config.database.DBNAME
+            await mongoose.connect(config.MONGO_URL, {
+                dbName: config.DBNAME
             })
-            console.log("DB Online...!!!")
+            logger.info("DB Online...!!!")
         } catch (error) {
             console.log(error)
         }
@@ -25,7 +26,7 @@ switch (persistenc) {
         break;
         
     default:
-        console.log("Error en persistencia seleccionada...!!!")
+        logger.error("Error en persistencia seleccionada...!!!")
         process.exit()
         break;
 }

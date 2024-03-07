@@ -1,138 +1,178 @@
-import { CartManagerDB } from '../dao/manager/CartsManagerDB.js';
-import { cartsService } from '../service/carts.service.js';
+import { CartManager } from "../service/carts.service.js";
+import { ProductManager } from "../service/products.service.js";
+import { ticketModel } from "../dao/models/ticket.model.js";
 
-import mongoose from 'mongoose';
 
-//instantiated class DB Cart
-const cm =  new CartManagerDB;
+const cartManager = new CartManager();
+const productManager = new ProductManager();
+export class cartsController {
+  constructor() {}
 
-export class cartsController{
-
-    static async getCarts(req,res){
-
-        try {
-            let carts =  await cartsService.getCarts();
-            res.setHeader('Content-Type','application/json');
-    
-            if(req.query.limit){
-                carts = carts.slice(0, req.query.limit)
-            }
-            return res.status(200).json({ ok:true, filtros: req.query, carts });
-            
-        } catch (error) {
-            console.log('Error: GET(cart) ' + error);
-        }
-
+  static async postCarts(req, res) {
+    /* const newCart = cartManager.createCart();
+        res.status(201).json(newCart); */
+    try {
+      console.log("entro en el  metodo postCarts");
+      const newCart = await cartManager.createCart();
+      res.status(201).json(newCart);
+    } catch (error) {
+      req.logger.error(error)
+      res.status(500).json({ error: "Error al crear el carrito" });
     }
+  }
 
-    static async getCartsById(req,res){
-        try {
-            let { cid }  = req.params;
-          
-            if(!mongoose.Types.ObjectId.isValid(cid)){
-                res.setHeader('Content-Type','application/json');
-                return  res.status(400).json({ ok:false, error: 'ID Cart is not valid'});
-            }
-    
-            const cart =  await cartsService.getCartById(cid);
-           
-            if(cart == undefined){
-                res.setHeader('Content-Type','application/json');
-                return res.status(404).json({ ok:false, error: 'ID Cart not found'});
-            }
-            res.setHeader('Content-Type','application/json');
-            return res.status(200).json({ ok:true, cart });
-            
-        } catch (error) {
-            console.log('Error: GET:ID(cart) ' + error);
-        }
-    }
+  static async getOneCart(req, res) {
+    let id = req.params.cid;
 
-    static async createCart(req,res){
-        try {
-            const newCart = await cartsService.createCart();
-            if(newCart){
-                res.setHeader('Content-Type', 'application/json');
-                return res.status(201).json({ok:'true', message: "Cart created successfully", newCart})
-            }else{
-                return res.status(400).json({ok:'false', error: "The cart couldn't be created"});
-            }
-        } catch (error) {
-            console.log('Error: POST: ' + error);
-        }
-    }
+    try {
+      const resultado = await cartManager.getCart(id);
 
-    static async createProdCart(req,res){
-
-        if (!req.params.cid || !req.params.pid || !req.body) {
-            throw new Error('Missing required arguments.')
-        }
-        try {
-            const cartId = req.params.cid
-            const productId = req.params.pid
-            const productQuantity = req.body.quantity
-    
-            const data = await cartsService.createProdCart(cartId, productId, productQuantity); 
-    
-            res.status(201).send({ status: 'Success', payload: data })
-        } catch (error) {
-            if(error == 'Missing required arguments.'){
-                console.error(error)
-                res.status(400).json({ status: 'Error', payload: error }) 
-            } else {
-                console.error(error)
-                res.status(500).json({ status: 'Error', payload: error }) 
-            }
-        }
-    }
-
-    static async generateTicket(req, res) {
-        try {
-          let carUsuario = req.user.cartID;
-          console.log(" generateTicket - carUsuario: " + carUsuario);
-
-          let carrito = await cartsService.getCartById(carUsuario); 
-          
-          let { noStock, productsStock } =
-            await productManager.updateProductQuantities(carrito);
-    
-          let amount = productsStock.reduce((totalAmount, product) => {
-            // Accede al precio del producto desde la propiedad product.price
-            const price = product.product.price;
-            // Verifica si el precio es un número válido
-            if (!isNaN(price)) {
-              // Multiplica el precio del producto por su cantidad y lo agrega al monto total
-              return totalAmount + price * product.quantity;
-            } else {
-              // Si el precio no es un número válido, retorna el monto total sin cambios
-              return totalAmount;
-            }
-          }, 0);
-    
-          const nuevoTicketData = {
-            purchase_datetime: new Date(),
-            products: productsStock,
-            amount: amount,
-            purchaser: req.user.email,
-          };
-          const nuevoTicket = await TicketModel.create(nuevoTicketData);
-         
-          
-          cartManager.updateCartWithNoStockProducts(carUsuario,noStock);
-          res.status(200).render('ticket', {
-            purchase_datetime: nuevoTicketData.purchase_datetime,
-            products: nuevoTicketData.products,
-            amount: nuevoTicketData.amount,
-            purchaser: nuevoTicketData.purchaser,
-            noStock: noStock
-        });
-        
-        
-        } catch (error) {
-          req.logger.error(error);
-          res.status(500).json({ error: "error" });
-        }
+      if (!resultado) {
+        res.status(404).json("Carrito no encontrado");
+      } else {
+        res.setHeader("Content-Type", "text/html");
+        res.status(200).render("carrito", { resultado, id });
       }
+    } catch (error) {
+      req.logger.error(error)
+      res.status(500).json({ error: "Error al obtener el carrito" });
+    }
+  }
 
+  static async getCarts(req, res) {
 
+    try {
+
+    
+      console.log("hola");
+      //res.status(200).json({ payload:resultado });
+      
+
+    } catch (error) {
+      req.logger.error(error)
+      res.status(500).json({ error: "Error al obtener el carrito" });
+    }
+  }
+
+  static async postProductOnCart(req, res) {
+    let productId = req.params.pid;
+    let id = req.params.cid;
+
+    try {
+      if (await cartManager.addProductToCart(id, productId)) {
+        res
+          .status(200)
+          .json({ message: "Producto agregado al carrito con éxito" });
+      } else {
+        res.status(404).json({ error: "Carrito no encontrado" });
+      }
+    } catch (error) {
+      req.logger.error(error)
+      res
+        .status(500)
+        .json({ error: "Error al agregar el producto al carrito " });
+    }
+  }
+
+  static async postProductOnCartAct(req, res) {
+    const productId = req.params.pid;
+    let id = req.params.cid;
+
+    const newQuantity = req.body.quantity;
+    req.logger.info(newQuantity)
+
+    try {
+      if (newQuantity !== undefined && newQuantity !== null) {
+        // Actualiza la cantidad del producto en el carrito
+        if (
+          await cartManager.updateProductQuantityInCart(
+            id,
+            productId,
+            newQuantity
+          )
+        ) {
+          res
+            .status(200)
+            .json({ message: "Cantidad del producto actualizada con éxito" });
+        } else {
+          res
+            .status(404)
+            .json({ error: "Producto no encontrado en el carrito" });
+        }
+      } else {
+        res
+          .status(400)
+          .json({ error: "La cantidad del producto no se proporcionó" });
+      }
+    } catch (error) {
+      req.logger.error(error)
+      res.status(500).json({ error: "Error al procesar la solicitud" });
+    }
+  }
+
+  static async deleteCart(req, res) {
+    let productId = req.params.pid;
+    let id = req.params.cid;
+    id = parseInt(id);
+
+    if (isNaN(id)) {
+      return res.send("Error, ingrese un argumento id numerico");
+    }
+
+    try {
+      if (await cartManager.removeProductFromCart(id, productId)) {
+        res.status(200).json({ message: "Producto eliminado con exito" });
+      } else {
+        res.status(404).json({ error: "Carrito no encontrado" });
+      }
+    } catch (error) {
+      req.logger.error(error);
+      res.status(500).json({ error: "Error al eliminar el producto" });
+    }
+  }
+
+  static async generateTicket(req, res) {
+    try {
+      let carUsuario = req.user.cart;
+      let carrito = await cartManager.getCart(carUsuario);
+      let { noStock, productsStock } =
+        await productManager.updateProductQuantities(carrito);
+
+      let amount = productsStock.reduce((totalAmount, product) => {
+        // Accede al precio del producto desde la propiedad product.price
+        const price = product.product.price;
+        // Verifica si el precio es un número válido
+        if (!isNaN(price)) {
+          // Multiplica el precio del producto por su cantidad y lo agrega al monto total
+          return totalAmount + price * product.quantity;
+        } else {
+          // Si el precio no es un número válido, retorna el monto total sin cambios
+          return totalAmount;
+        }
+      }, 0);
+
+      const nuevoTicketData = {
+        purchase_datetime: new Date(),
+        products: productsStock,
+        amount: amount,
+        purchaser: req.user.email,
+      };
+      const nuevoTicket = await ticketModel.create(nuevoTicketData);
+     
+      
+      cartManager.updateCartWithNoStockProducts(carUsuario,noStock);
+      res.status(200).render('ticket', {
+        purchase_datetime: nuevoTicketData.purchase_datetime,
+        products: nuevoTicketData.products,
+        amount: nuevoTicketData.amount,
+        purchaser: nuevoTicketData.purchaser,
+        noStock: noStock
+    });
+    
+    
+    } catch (error) {
+      req.logger.error(error);
+      res.status(500).json({ error: "error" });
+    }
+  }
 }

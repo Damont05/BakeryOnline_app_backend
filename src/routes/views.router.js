@@ -1,32 +1,39 @@
 import { Router } from 'express';
-import {cartModel} from '../dao/models/carts.model.js'
-
-import {usersModel} from '../dao/models/users.model.js'
-
-import { productService } from "../service/products.service.js"
-
-
+//import { logger } from '../utils/loggers';
 export const router=Router()
 
-//midd
 const auth=(req, res, next)=>{
-    if(!req.session.usuario){
-        res.redirect('/')
+    if(!req.session.user){
+        res.redirect('/login')
     }
     next()
 }
 
-const auth2=(req, res, next)=>{
-    if(req.session.usuario){
-        return res.redirect('/home')
-    }
+router.get('/',(req,res)=>{
 
-    next()
-}
+    let {error, mensaje}=req.query
 
-router.get('/home',auth,async (req,res)=>{
+    res.setHeader('Content-Type','text/html')
+    res.status(200).render('login', {estilo:"style"})
+})
+
+router.get('/home',(req,res)=>{
+
+    res.setHeader('Content-Type','text/html')
+    res.status(200).render('home',{estilo:"style"})
+})
+
+router.get('/register',(req,res)=>{
+
+    let {error}=req.query
+
+    res.setHeader('Content-Type','text/html')
+    res.status(200).render('register', {error,estilo:"style"})
+})
+
+router.get('/products',auth,async (req,res)=>{
     
-    let usuario=req.session.usuario
+    let user=req.session.user
     
     let pag = 1;
     if(req.query.pag){
@@ -36,7 +43,7 @@ router.get('/home',auth,async (req,res)=>{
     let products
     try {
         products =  await productService.getProducts();
-        res.status(200).render('home', {products, usuario,estilo:"style", login:true}) 
+        res.status(200).render('products', {products, user,estilo:"style", login:true}) 
        
     } catch (error) {
         console.log(error);
@@ -44,55 +51,32 @@ router.get('/home',auth,async (req,res)=>{
     }
 })
 
-/*
-router.get('/:cid', async (req, res) => {
-	if(!req.params.cid) return 
-
-	try{
-		const cartId = req.params.cid
-
-		const currentCart = await cartModel.findOne({_id:cartId}) 
-
-		res.render('cart', { data: currentCart})
-	}catch(error){
-		console.log(error);
-	}
-})*/
-
-//****ROUTE VIEW USER*****
-router.get('/user',async (req,res)=>{
-    let users    
-    try {
-        users =  await usersModel.find();
-        res.status(200).render('users', {users,  estilo:"style"})
-    } catch (error) {
-        console.log(error);
-        users=[]
-    }
-})
-
-router.get('/realtimeproducts',async (req,res)=>{
-
-    let products =  await pm.f_getProducts();
-    res.status(200).render('realTimeProducts', {
-        products
-    })
-})
 
 
-router.get('/register',auth2,(req,res)=>{
 
-    let {error}=req.query
+router.get('/login',(req,res)=>{
 
-    res.setHeader('Content-Type','text/html')
-    res.status(200).render('register', {error,estilo:"style"})
-})
-
-
-router.get('/',auth2,(req,res)=>{
-
+    console.log("entrando al /login");
     let {error, mensaje}=req.query
+    console.log({error, mensaje})
+    res.setHeader('Content-Type','text/html')
+
+    res.status(200).render('login', {error, mensaje,estilo:"style"})
+})
+
+router.get('/profile', auth, (req,res)=>{
+
+    let user=req.session.user
 
     res.setHeader('Content-Type','text/html')
-    res.status(200).render('login', {error, mensaje, estilo:"style"})
+    res.status(200).render('perfil', {user})
 })
+
+router.get('/crudProduct', auth, (req,res)=>{
+
+    let user=req.session.user
+
+    res.setHeader('Content-Type','text/html')
+    res.status(200).render('CRUDproducts')
+})
+

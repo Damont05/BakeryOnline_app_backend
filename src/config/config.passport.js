@@ -2,7 +2,9 @@ import passport from "passport";
 import github from "passport-github2"
 import local from "passport-local"
 import {usersModel} from "../dao/models/users.model.js"
-import { creaHash, validPass } from '../utils.js'
+import { creaHash, validPass } from '../utils/utils.js'
+import { config } from './config.js'
+import { logger } from "../utils/loggers.js";
 
 export const initPassport=()=>{
 
@@ -12,43 +14,42 @@ export const initPassport=()=>{
         },
         async(req,username, password, done) => {
 
-            let {first_name,last_name, email,age}=req.body
-            if(!first_name || !last_name || !email || !password || !age ){
-                //return res.redirect('/register?error=Complete todos los datos')
-                return done(null, false)
-            }
-
-            let regMail=/^(([^<>()\[\]\\.,;:\s@”]+(\.[^<>()\[\]\\.,;:\s@”]+)*)|(“.+”))@((\[[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}])|(([a-zA-Z\-0–9]+\.)+[a-zA-Z]{2,}))$/
-            if(!regMail.test(email)){ 
-                //return res.redirect('/register?error=Mail con formato incorrecto...!!!')
-                return done(null, false)
-            }
-
-            let existe=await usersModel.findOne({email})
-            if(existe){                            
-                //return res.redirect(`/register?error=Existen usuarios con email ${email} en la BD`)
-                return done(null, false)
-            }
-           
-            //password=crypto.createHmac("sha256", "bakery123").update(password).digest("hex")
-            password=creaHash(password)
-            console.log('PASSWORD REGISTER CRYPTO1: ',password);
-
-           
-            let usuario
             try {
-
-                usuario=await usersModel.create({first_name,last_name, email, age, password})
-
-                //res.redirect(`/?mensaje=Usuario ${email} registrado correctamente`)
-            
-                return done(null, usuario)
-            
-            
+                
+                let {first_name,last_name, email,age}=req.body
+                let role = 'user'
+    
+                if(!first_name || !last_name || !email || !password || !age ){
+                    //return res.redirect('/register?error=Complete todos los datos')
+                    return done(null, false)
+                }
+    
+                let regMail=/^(([^<>()\[\]\\.,;:\s@”]+(\.[^<>()\[\]\\.,;:\s@”]+)*)|(“.+”))@((\[[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}])|(([a-zA-Z\-0–9]+\.)+[a-zA-Z]{2,}))$/
+                if(!regMail.test(email)){ 
+                    //return res.redirect('/register?error=Mail con formato incorrecto...!!!')
+                    return done(null, false)
+                }
+    
+                let exist=await usersModel.findOne({email})
+                if(exist){                            
+                    //return res.redirect(`/register?error=Existen usuarios con email ${email} en la BD`)
+                    return done(null, false)
+                }
+               
+                //password=crypto.createHmac("sha256", "bakery123").update(password).digest("hex")
+                password=creaHash(password)
+                logger.info('PASSWORD REGISTER CRYPTO1: ',password);
+    
+                let user
+                try {
+                    user=await usersModel.create({first_name,last_name, email, password, role})
+                    return done(null, user)
+                
+                } catch (error) {
+                    return done(null,false);
+                }
             } catch (error) {
-                //res.redirect('/register?error=Error inesperado. Reintente en unos minutos')
                 return done(error);
-                //return done(null, false)
             }
         }
     ))
@@ -57,56 +58,55 @@ export const initPassport=()=>{
         {
             usernameField: 'email'
         },
-        async(email, password, done)=>{
+        async(username, password, done)=>{
             try {
                 
-                console.log("Estrategia local LOGIN de Passport...!!!")
+                logger.info("Estrategia local LOGIN de Passport...!!!")
     
                 //let {email, password}=req.body
-                if(!email  || !password){
+                if(!username  || !password){
                     //return res.redirect('/?error=Complete todos los datos')
                     return done(null, false)
                 }
     
-                let usuario=await usersModel.findOne({email}).lean()
+                let user=await usersModel.findOne({email:username}).lean()
                 // console.log('usuario: ', usuario);
-                if(!usuario){
+                if(!user){
                     //return res.redirect(`/?error=credenciales incorrectas`)
                     return done(null, false)
                 }
     
-                if(!validPass(usuario,password)){
+                if(!validPass(user,password)){
                     //return res.redirect(`/?error=credenciales incorrectas`)
                     return done(null, false)
                 }
-                
-                console.log(Object.keys(usuario))
-                delete usuario.password
-                return done(null, usuario)
+                logger.info("USER: ", user);
+                logger.info(Object.keys(user))
+                delete user.password
+                return done(null, user)
 
             } catch (error) {
-                 return done(error)
+                 return done(error,null)
             }
         }
-
     ))
 
     passport.use('github' , new github.Strategy(
         {
-            clientID:"Iv1.20547c8065035614",
-            clientSecret:"60082e580fe147352cc1cf17c7bde2172060dc18",
-            callbackURL:"http://localhost:8080/api/sessions/callbackGithub",
+            clientID:config.CLIENT_ID,
+            clientSecret:config.CLIENT_SECRET,
+            callbackURL:config.CALLBACK_URL,
 
         },
         async(accessToken,refreshToken,profile,done)=>{
 
             try {
-                //console.log("profile: ", profile);
                 let user = await usersModel.findOne({email:profile._json.email})
                 if(!user){
                     let newUser =  {
                         name: profile._json.name,
                         email: profile._json.email,
+                        rol: 'user', 
                         profile
                     }
                     user = await usersModel.create(newUser)

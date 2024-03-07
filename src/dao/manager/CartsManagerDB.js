@@ -18,7 +18,7 @@ export class CartManagerDB{
     }
 
     //Add products cart
-    async f_addCart(){
+    async f_addCart(id,user){
 
         try { 
             // const newCart = await cartModel.create({ products: [] });
@@ -106,4 +106,29 @@ export class CartManagerDB{
 			}
 		}
     }
+    
+    async addProduct(cartId,productId){
+
+        const cart = await cartModel.findOne({ _id:cartId });
+
+        if (!cart) {
+            throw new Error("Carrito no encontrado");
+        }
+
+        const existingProductIndex = cart.products.findIndex((product) =>
+            product.product.equals(productId)
+        );
+
+        if (existingProductIndex !== -1) {
+            cart.products[existingProductIndex].quantity =
+            (cart.products[existingProductIndex].quantity || 0) + 1;
+        
+        } else {
+            cart.products.push({ product: productId, quantity: 1 });
+        }
+
+        await cart.save();
+
+    }
+
 } //end class CCartsManager

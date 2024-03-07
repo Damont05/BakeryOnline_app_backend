@@ -8,14 +8,10 @@ const __dirname = dirname(__filename);
 
 export default __dirname;
 
-
-
-
-
-
- export const  logger=winston.createLogger(
+ export const logger=winston.createLogger(
     {
         levels:{fatal:0,error:1,warning:2,info:3, http:4, debug:5},
+        format: winston.format.simple(),
         transports:[
             new winston.transports.Console(
                 {
@@ -28,9 +24,6 @@ export default __dirname;
                     )
                 }
             ),
-
-             
-            
         ]
     }
 )
@@ -56,15 +49,12 @@ const transporteFile=new winston.transports.File(
     }
 )
 
-// if(config.MODE==="production"){
-//     console.log("ingreso")
-//     logger.add(transporteFile,transporteProd)
-// }
-
+if(config.MODE==="production"){
+    //console.log("ingreso")
+    logger.add(transporteFile,transporteProd)
+}
 
 export const middLogg=(req, res, next)=>{
     req.logger=logger
-   
-
     next()
 }

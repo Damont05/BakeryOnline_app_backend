@@ -1,57 +1,33 @@
-//***************************************************************************/
-//      |       Author     |      description          |    Date    |
-//      |------------------|---------------------------|------------|
-//        Luis D. Montero  |  Primera entrega          | 05-11-2023
-//      |----------------- |---------------------------|------------|
-//        Luis D. Montero  |  Add Middleware 'auth'    | 01-02-2024
-//      |----------------- |---------------------------|------------|
+import { cartsController } from "../controller/carts.controller.js";
+import express from "express";
 
-//**************************************************************************/
+const router = express.Router();
 
-import {Router} from 'express';
-import {cartsController} from '../controller/carts.controller.js'
-export const router = Router();
 
-//Middleware
-const auth=(req, res, next)=>{
-    if(!req.session.usuario){
-        res.redirect('/')
-    }
-    next()
-}
+const auth = (req, res, next) => {
+  if (!req.session.user) {
+    res.redirect("/login");
+    return;
+  }
 
-//******************************************/
-//route get cart (api/carts/)
-//******************************************/
-router.get('/', auth, cartsController.getCarts);
+  next();
+};
 
-//***********************************************/
-//route get cart for id (api/cart/:pid)
-//***********************************************/
-router.get('/:cid', auth, cartsController.getCartsById);
+router.post("/",auth, cartsController.postCarts);
+// Ruta para listar los productos de un carrito específico
+router.get("/:cid", auth, cartsController.getOneCart);
 
-//*************************************/
-//route add Cart (api/carts/)
-//*************************************/
-router.post('/', auth, cartsController.createCart);
+//router.get("/all", cartsController.getCarts);
 
-//*****************************************************/
-//route add Product Cart (api/carts/:cid/product/:pid)
-//*****************************************************/
-router.post('/:cid/addproduct/:pid',auth, cartsController.createProdCart);
+// Ruta para agregar un producto a un carrito específico
+router.post("/:cid/addproduct/:pid",auth, cartsController.postProductOnCart);
 
-//*****************************************************/
-//route generate ticket (api/carts/:cid/purchase)
-//*****************************************************/
 router.get("/:cid/purchase", auth, cartsController.generateTicket)
+// ruta para actualizar cantidades de producto
+router.post("/:cid/product/:pid",auth, cartsController.postProductOnCartAct);
 
-//*****************************************************/
-//route update cant product (api/carts/:cid/cantproduct/:pid)
-//*****************************************************/
-//router.post("/:cid/product/:pid",auth, cartsController.postProductOnCartAct);
+router.delete("/:cid/product/:pid",auth, cartsController.deleteCart);
 
-//*****************************************************/
-//route delete cart (api/carts/:cid/product/:pid)
-//*****************************************************/
-//router.delete("/:cid/product/:pid",auth, cartsController.deleteCart);
 
+
+export default router;

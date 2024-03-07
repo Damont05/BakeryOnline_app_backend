@@ -8,33 +8,22 @@
 //   
 //**********************************************************************/
 
-import {Router} from 'express';
+import express from "express";
 import {productsController} from '../controller/products.controller.js'
-export const router = Router();
+import { auth,authAdmin,authUser } from "../utils/utils.js";
 
+const router = express.Router();
 
-//******************************************/
-//route get products (path : /api/products)
-//******************************************/
-router.get('/', productsController.getProducts);
+router.get("/products",  productsController.getCart );
 
-//***********************************************/
-//route get product for id (api/products/:pid)
-//***********************************************/
-router.get('/:pid', productsController.getProductsById);
+router.get("/crudProduct", auth,authAdmin, productsController.crud )
 
-//*************************************/
-//route add product (api/products/)
-//*************************************/
-router.post('/', productsController.createProduct);
+router.get("/products/:pid", auth, productsController.getOneProduct);
 
-//*****************************************/
-//route update product (api/products/:pid)
-//*****************************************/
-router.put('/:id', productsController.updateProduct);
+router.post("/products", productsController.postProduct);
 
-//*****************************************/
-//route deleted product (api/products/:pid)
-//*****************************************/
-router.delete('/:pid', productsController.deleteProduct);
+router.post("/productsAct",productsController.actProduct);
 
+router.post("/delete",authAdmin, productsController.deleteProd);
+
+export default router;

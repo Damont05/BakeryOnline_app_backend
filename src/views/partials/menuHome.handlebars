@@ -13,14 +13,13 @@
                 </li>
                 
                 <div class="divCanasta">
-                    <h1 class="getCart" id="getCart">🧺<span id="cantCart" class="cant-cart"></span></h1>
-
+                     <a class="getCart" id="getCart" href="/api/cart/{{user.last_name}}">🧺<span id="cantCart" class="cant-cart"></a></span>
                 </div>
 
 
             {{else}}
                 <li>
-                    <a href="/">Login</a>
+                    <a href="/login">Login</a>
                 </li>
                 <li>
                     <a href="/register">Register</a>

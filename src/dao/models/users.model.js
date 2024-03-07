@@ -12,10 +12,7 @@ const usersSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'cart'
         }, 
-        role: {
-            type:String, 
-            default:'user'
-        },
+        role: String, 
     }, 
     {
         timestamps: {

@@ -1,7 +1,7 @@
 import { usersModel }   from '../dao/models/users.model.js';
 import { usersService } from '../service/users.service.js';
 import mongoose from 'mongoose';
-import { creaHash, validPass } from '../utils.js'
+import { creaHash, validPass } from '../utils/utils.js';
 
 
 export class usersController{

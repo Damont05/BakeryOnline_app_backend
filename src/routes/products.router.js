@@ -14,7 +14,7 @@ import { auth,authAdmin,authUser } from "../utils/utils.js";
 
 const router = express.Router();
 
-router.get("/products",  productsController.getCart );
+//router.get("/products",  authUser,productsController.getCart );
 
 router.get("/crudProduct", auth,authAdmin, productsController.crud )
 

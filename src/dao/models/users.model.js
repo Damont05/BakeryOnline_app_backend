@@ -8,17 +8,12 @@ const usersSchema = new mongoose.Schema(
         email:      { type:String, require:true, unique:true },
         age:        Number,
         password:   String,
+        rol:        String, 
         cartID: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'cart'
         }, 
-        role: String, 
     }, 
-    {
-        timestamps: {
-            updatedAt: "FechaUltMod", createdAt: "FechaAlta"
-        },
-        strict:false
-    }
+    {timestamps:true}
 )
 export const usersModel = mongoose.model(userCollection,usersSchema)

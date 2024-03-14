@@ -27,10 +27,7 @@ export class productMongoDAO {
     }
 
     static async get() {
-        return productsModel.findOne()
-            .sort({ id: -1 })
-            .limit(1)
-            .lean();
+        return productsModel.findOne().lean();
     }
 
     static async getProduct(id) {

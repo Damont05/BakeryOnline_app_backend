@@ -16,17 +16,20 @@ export class cartMongoDAO {
 
 
     static async get() {
-        return cartModel.find()
+
+        console.log("metodo get DAO CARTS");
+        return cartModel.find().lean();
     }
 
-    static async create(id, user) {
+    static async create() {
 
-
-        const newCart = new cartModel({ id: id, products: [], user: user });
-
-        await newCart.save();
-
-        return newCart;
+        try {
+            return await cartModel.create({ products:[] });
+            
+        } catch (e) {
+            console.log(e.message)
+            return null
+        }
     }
 
     static async getCart(cartId) {

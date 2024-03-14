@@ -26,6 +26,16 @@ export class ProductManager {
       logger.error(e)
       return null;
     }
+  } 
+
+   //Get products
+  async getProducts (){
+    try {
+      return productMongoDAO.get();
+        
+    } catch (error) {
+      console.log('ERROR: f_getProducts - ' + error);
+    }
   }
 
   async addProduct(productData) {

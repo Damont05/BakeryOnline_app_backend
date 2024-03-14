@@ -4,8 +4,10 @@ import { logger } from "../utils/loggers.js";
 export class CartManager {
   async createCart(userCar) {
     try {
+      logger.info('Creating a new cart for user')
       const existingCarts = await Dao.get();
       const cartId = existingCarts.length;
+      logger.info('Id carrito: ' ,cartId)
       const newCart = await Dao.create(cartId, userCar);
       return newCart;
     } catch (error) {
@@ -13,6 +15,17 @@ export class CartManager {
       throw new Error("Error al crear el carrito");
     }
   }
+
+  async create() {
+    try {
+      return Dao.create();
+    } catch (e) {
+      logger.error(e);
+      throw new Error("Error al crear el carrito");
+    }
+  }
+
+  
 
   async getCart(cartId) {
     try {

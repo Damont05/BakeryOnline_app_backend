@@ -8,10 +8,10 @@
 
 //imports
 //
-import {dirname} from 'path';
-//import __dirname  from './utils/utils.js';
+//import {dirname} from 'path';
+import __dirname  from "./utils/utils.js";
 
-import { fileURLToPath } from "url";
+//import { fileURLToPath } from "url";
 import path from "path";
 import express from 'express';
 import { engine } from 'express-handlebars';
@@ -36,18 +36,19 @@ import { router as viewsRouter } from './routes/views.router.js';
 import { router as sessionRouter } from './routes/session.router.js';
 import { router as mockingRouter } from "./routes/mocking.router.js";
 import { router as loggerTest } from "./routes/loggerTets.router.js";
-import { router as recovery } from "./routes/recovery.router.js";
+//import { router as recovery } from "./routes/recovery.router.js";
 import { router as routeUsers } from './routes/users.router.js';
 import chatRouter from './routes/chat.router.js';
 //
 
+const PORT = 8080;
 const app = express();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = dirname(__filename);
 
 //Port
-const PORT = 8080;
+app.set('views', path.join(__dirname,'../views'));
 
 //mid session
 app.use(sessions(
@@ -64,15 +65,19 @@ app.use(sessions(
     }
 ));
 
-app.engine('handlebars', engine());
+app.engine('handlebars', engine({
+    runtimeOptions: {
+        allowProtoPropertiesByDefault: true,
+        allowProtoMethodsByDefault: true,
+    },
+}));
 app.set('view engine', 'handlebars');
-app.set('views', path.join(__dirname,'/views'));
+app.use(express.static(path.join(__dirname,'/public'))); //static public
 
 
 //Middlewares
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
-app.use(express.static(path.join(__dirname,'/public'))); //static public
 
 //Passport config
 initPassport()
@@ -96,7 +101,7 @@ app.use('/api/sessions', sessionRouter);
 app.use('/mockingProducts', mockingRouter);
 
 app.use('/loggerTest',loggerTest);
-app.use('/api/recovery', recovery);
+//app.use('/api/recovery', recovery);
 //main route products
 app.use('/api', routeProducts);
 //main route users

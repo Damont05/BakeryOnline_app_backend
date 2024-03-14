@@ -10,10 +10,11 @@ router.get('/errorLogin',(req,res)=>{
 
 router.post('/login', passport.authenticate('login',{failureRedirect:'/api/sessions/errorLogin'}), async(req, res)=>{
 
-    req.session.user={
-        first_name:req.user.first_name, email:req.user.email , rol: req.user.role, car: req.user.car
+    req.session.usuario={
+        first_name:req.user.first_name, email:req.user.email , rol: req.user.role, car: req.user.cartID
     }
-    logger.info(req.session.user);
+    logger.info("req.session.car: " + req.session.usuario.car);
+    logger.info("req.session.role: " +   JSON.stringify(req.session.usuario));
     res.redirect('/products')
 
 })

@@ -11,6 +11,7 @@ export const creaHash = (password) => bcrypt.hashSync(password, bcrypt.genSaltSy
 export const validPass = (user, password) => bcrypt.compareSync(password, user.password);
 
 export const auth = (req, res, next) => {
+    console.log("ENTRANDO AL AUTH DEL UTILS.JS");
     if (!req.session.user) {
         res.redirect("/login");
         return;
@@ -27,6 +28,7 @@ export const authAdmin = (req, res, next) => {
 };
 
 export const authUser = (req, res, next) => {
+    console.log("ENTRANDO AL authUser DEL UTILS.JS");
     console.log("authUser: ",req.session.user);
     if (!(req.session.user.rol === "user")) {
         res.status(200).json({ message: "Only the users has access" });

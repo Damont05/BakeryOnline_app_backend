@@ -4,6 +4,8 @@ import { usersModel } from "../dao/models/users.model.js";
 import { CustomError , trataError} from '../utils/CustomErrors.js';
 import { ERRORES_INTERNOS, STATUS_CODES } from '../utils/tiposError.js';
 import { errorArgumentos, errorArgumentosDel } from '../utils/errors.js';
+import { logger } from "../utils/loggers.js";
+
 
 const cartManager = new CartManager()
 const productManager = new ProductManager();
@@ -12,93 +14,99 @@ export class productsController {
   constructor() {}
 
   static async getCart(req, res) {
+    
     try {
 
-      
-      let userCar = req.user._id;
-      const newCart = await cartManager.createCart(userCar);
-      req.logger.info(`carrito nuevo ${newCart}`)
+    logger.info('entrando al getCart de productos')
 
-      let updateUsuario = await usersModel.findOne({
-        email: req.session.user.email,
-      });
+    //logger.info('REQ.USER._ID: ',  req.user);
 
-      updateUsuario.car =  await newCart._id;
-      await updateUsuario.save();
+    let userCar = req.user._id;
+    logger.info("userCar: ",userCar);
+
+      // const newCart = await cartManager.createCart(userCar);
+      // req.logger.info(`carrito nuevo ${newCart}`)
+
+      // let updateUsuario = await usersModel.findOne({
+      //   email: req.n.user.email,
+      // });
+
+      // updateUsuario.car =  await newCart._id;
+      // await updateUsuario.save();
  
       
-      updateUsuario = await usersModel.findOne({ email: req.session.user.email }).lean()
+      // updateUsuario = await usersModel.findOne({ email: req.session.user.email }).lean()
 
-      let usuario = updateUsuario; 
-      let rol = updateUsuario.rol;
-      let auto = false
-      let autoUser= false; 
-
-     
-      req.logger.info(`usuario en sesion es ${updateUsuario}`)
-      let pagina = 1;
-      if (req.query.pagina) {
-        pagina = req.query.pagina;
-      }
-
-      let limite = null;
-      if (req.query.limit) {
-        limite = req.query.limit;
-      }
-
-      let resultado;
-      let preresultado = await productManager.listarProductos(pagina, limite);
-      let categoria = req.query.categoria
-        ? req.query.categoria.toLowerCase()
-        : null;
-
-      if (req.query.categoria) {
-        req.logger.info(`entrando a categoria`)
-        preresultado = await productManager.listarProductos(
-          pagina,
-          limite,
-          undefined,
-          categoria
-        );
-      }
-
-      if (req.query.sort) {
-        req.logger.info(`entrando al sort`)
-        let sortOrder = req.query.sort === "desc" ? -1 : 1;
-        preresultado = await productManager.listarProductos(
-          pagina,
-          limite,
-          sortOrder,
-          categoria
-        );
-      }
-
-      resultado = preresultado.docs;
-
-      let { totalPages, hasNextPage, hasPrevPage, prevPage, nextPage } =
-        preresultado;
-
-      if (rol === "admin") {
-        auto = true;
-      }
-
-      if (rol === "user") {
-       autoUser = true;
-      }
+      // let usuario = updateUsuario; 
+      // let rol = updateUsuario.rol;
+      // let auto = false
+      // let autoUser= false; 
 
      
+      // req.logger.info(`usuario en sesion es ${updateUsuario}`)
+      // let pagina = 1;
+      // if (req.query.pagina) {
+      //   pagina = req.query.pagina;
+      // }
 
-      res.status(200).render("products", {
-        resultado: resultado,
-        totalPages,
-        hasNextPage,
-        hasPrevPage,
-        prevPage,
-        nextPage,
-        user,
-        auto,
-        autoUser
-      });
+      // let limite = null;
+      // if (req.query.limit) {
+      //   limite = req.query.limit;
+      // }
+
+      // let resultado;
+      // let preresultado = await productManager.listarProductos(pagina, limite);
+      // let categoria = req.query.categoria
+      //   ? req.query.categoria.toLowerCase()
+      //   : null;
+
+      // if (req.query.categoria) {
+      //   req.logger.info(`entrando a categoria`)
+      //   preresultado = await productManager.listarProductos(
+      //     pagina,
+      //     limite,
+      //     undefined,
+      //     categoria
+      //   );
+      // }
+
+      // if (req.query.sort) {
+      //   req.logger.info(`entrando al sort`)
+      //   let sortOrder = req.query.sort === "desc" ? -1 : 1;
+      //   preresultado = await productManager.listarProductos(
+      //     pagina,
+      //     limite,
+      //     sortOrder,
+      //     categoria
+      //   );
+      // }
+
+      // resultado = preresultado.docs;
+
+      // let { totalPages, hasNextPage, hasPrevPage, prevPage, nextPage } =
+      //   preresultado;
+
+      // if (rol === "admin") {
+      //   auto = true;
+      // }
+
+      // if (rol === "user") {
+      //  autoUser = true;
+      // }
+
+     
+
+      // res.status(200).render("products", {
+      //   resultado: resultado,
+      //   totalPages,
+      //   hasNextPage,
+      //   hasPrevPage,
+      //   prevPage,
+      //   nextPage,
+      //   user,
+      //   auto,
+      //   autoUser
+      // });
     } catch (e) {
       // Manejar errores aquí
       console.log(e)

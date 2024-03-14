@@ -23,14 +23,6 @@ const addProductCart = document.querySelectorAll('addCart');
 
 
 
-document.addEventListener('DOMContentLoaded', function () {
-
-    console.log("ENTRO EN ELÑ EVENTLISTENER");
-
-    var carUsuario= "{{user.first_name}}";
-    console.log("CARUAURIOOO: ",carUsuario)
-})
-
 
 //contador de productos de la canasta
 const cartCount=()=>{

@@ -1,6 +1,14 @@
 import { Router } from 'express';
 //import { logger } from '../utils/loggers';
 export const router=Router()
+import {productsController} from '../controller/products.controller.js'
+
+
+import { getProducts } from '../controller/views.controller.js';
+
+import { ProductManager } from "../service/products.service.js";
+const productManager = new ProductManager();
+
 
 const auth=(req, res, next)=>{
     if(!req.session.user){
@@ -31,32 +39,34 @@ router.get('/register',(req,res)=>{
     res.status(200).render('register', {error,estilo:"style"})
 })
 
-router.get('/products',auth,async (req,res)=>{
+router.get('/products',auth,getProducts)
     
-    let user=req.session.user
+//     let user=req.session.user
+
+//     console.log("USER VIEWS ROUTER: ", user);
     
-    let pag = 1;
-    if(req.query.pag){
-        pag=req.query.pag
-    }
+//     let pag = 1;
+//     if(req.query.pag){
+//         pag=req.query.pag
+//     }
     
-    let products
-    try {
-        products =  await productService.getProducts();
-        res.status(200).render('products', {products, user,estilo:"style", login:true}) 
+//     let products
+//     try {
        
-    } catch (error) {
-        console.log(error);
-        products=[]
-    }
-})
+//         products =  await productsController.getCart();
+//         res.status(200).render('products', {products, user,estilo:"style", login:true}) 
+       
+//     } catch (error) {
+//         console.log(error);
+//         products=[]
+//     }
+// })
 
 
 
 
 router.get('/login',(req,res)=>{
 
-    console.log("entrando al /login");
     let {error, mensaje}=req.query
     console.log({error, mensaje})
     res.setHeader('Content-Type','text/html')
